@@ -8,7 +8,16 @@ standard numeric fields drawn by Karoo.
 
 Builds, and the protocol unit tests pass (first build 2026-10-07: Gradle 9.1.0, AGP 8.13.2, Kotlin 2.3.0,
 Android Studio's bundled JDK 25). Works on a Karoo 2 against the fake gearbox `tools/fake_pinion.py` (Raspberry Pi, Bumble): connect, shifts,
-battery, disconnect alert and reconnect all checked 2026-10-07. **Not yet run against a real gearbox.**
+battery, disconnect alert and reconnect all checked 2026-10-07.
+
+**Real gearbox (reported 2026-10-11):** connected to the author's Smart.Shift (Priority Gemini) on the Karoo 2 and
+the gear field followed shifts through the gears. Not yet checked on real hardware: the battery field, the
+disconnect alert, reconnecting.
+
+That gearbox does not enter pairing mode from either shift button (a fault that predates the extension). It
+advertised by itself at power-on after a reset that involved unplugging the Smart.Shift battery, and that is how
+the connection was made; connecting again needs the battery unplugged again. So a second way into advertising
+exists (power-on after a battery disconnect), at least on this unit.
 
 ## BLE protocol
 
@@ -35,7 +44,8 @@ Source: Tim Angus's reverse engineering, <https://github.com/timangus/garmin-con
   the client just scans until that happens and the field shows "Hold shift 3s".
 
 Open questions to settle on the real hardware:
-- How long the advertising window lasts after the button hold.
+- Whether the battery read (`64 61 01`) returns a believable value.
+- How long the advertising window lasts after the button hold (and after a power-on).
 - Whether the BLE address is stable (assumed yes: after the first connection the scan filters on the saved address).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap).

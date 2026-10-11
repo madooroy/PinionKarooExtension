@@ -19,14 +19,20 @@ They are ordinary Karoo fields, so they look and behave like the built-in ones.
 
 ## Status
 
-**Not yet tested with a real gearbox.** Everything so far was tested on a **Karoo 2** against a simulated
-gearbox ([tools/fake_pinion.py](tools/fake_pinion.py)) that speaks the protocol as documented by the Garmin
+**The gear field works with a real gearbox.** In October 2026 the author connected a **Karoo 2** to the
+Smart.Shift box on his Priority Gemini, and the Pinion Gear field followed the shifts through the gears.
+The Pinion Battery field, the disconnect alert and reconnecting have not been checked on real hardware yet.
+
+Everything else was tested on a Karoo 2 against a simulated gearbox
+([tools/fake_pinion.py](tools/fake_pinion.py)) that speaks the protocol as documented by the Garmin
 project credited below. Against the simulator, connecting, gear changes, battery, the disconnect alert and
 reconnecting all work.
 
-The author would have liked to test it on his own Smart.Shift-equipped Priority Gemini, but that gearbox
-will not go into Bluetooth pairing mode. That problem started before this extension existed, and the
-extension has never been connected to that gearbox. Pinion has been contacted about it.
+**A note on pairing.** The author's gearbox will not go into Bluetooth pairing mode from the shift buttons
+(he tried both). That problem started before this extension existed, it looks like a fault in that
+Smart.Shift box, and Pinion has been contacted about it. What did work: after a reset that involved
+unplugging the Smart.Shift battery, the gearbox went into pairing mode by itself when it was switched on
+again, and the Karoo connected. On that gearbox, connecting again means unplugging the battery again.
 
 The extension only reads from the gearbox (gear, battery level, number of gears). It does not change any
 gearbox settings.
