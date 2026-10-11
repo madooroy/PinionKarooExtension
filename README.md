@@ -23,8 +23,9 @@ They are ordinary Karoo fields, so they look and behave like the built-in ones.
 box on his Priority Gemini, on a stationary bike:
 
 - the Pinion Gear field followed every shift, and the Pinion Battery field showed a plausible level (89 %);
-- the connection stayed up for more than an hour and a half, with ANT+ lights and a radar running
-  nearby for the last hour, and was still up when the test was ended;
+- the connection stayed up for close to two hours and was still up when the test was ended, with ANT+
+  lights, a radar and power meter pedals and a Bluetooth heart rate sensor connected to the Karoo for
+  part of that time;
 - after the gearbox was switched off and on, the Karoo found the remembered gearbox and connected again.
 
 Not yet checked on real hardware: the in-ride disconnect alert, and an actual ride.
@@ -112,9 +113,10 @@ Things to know:
 - **If the connection drops, the gearbox stops advertising.** That is how the gearbox works, not something
   the Karoo can fix: hold the shift button for three seconds again. During a ride the Karoo shows an alert
   telling you so.
-- **A quick run of shifts to harder gears can show as one jump** (1, then 5). The gearbox reports only the
-  gear it lands in. Pinion's manual says a shift is carried out when the cranks reach the vertical position,
-  so several quick presses are probably held and then made in one go. Shifts to easier gears show one by one.
+- **A quick run of shifts can show as one jump** (1, then 5). The gearbox reports only the gear it lands
+  in. Pinion's manual says a shift is carried out when the cranks reach the vertical position, and in testing
+  several quick presses were held until then and made in one go. Shifts to easier gears with the cranks still
+  are immediate and show one by one.
 - **The gearbox stays awake while the Karoo is connected.** Left alone it switches itself off after a few
   minutes; connected, it was still on after 77 minutes without a shift. Its battery level did not move in
   that time, but it is a reason not to leave the Karoo on next to the bike for days.
