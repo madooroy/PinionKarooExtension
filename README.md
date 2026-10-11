@@ -23,7 +23,8 @@ They are ordinary Karoo fields, so they look and behave like the built-in ones.
 box on his Priority Gemini, on a stationary bike:
 
 - the Pinion Gear field followed every shift, and the Pinion Battery field showed a plausible level (89 %);
-- the connection stayed up for more than 20 minutes, until the test was ended;
+- the connection stayed up for more than an hour and a half, with ANT+ lights and a radar running
+  nearby for the last hour, and was still up when the test was ended;
 - after the gearbox was switched off and on, the Karoo found the remembered gearbox and connected again.
 
 Not yet checked on real hardware: the in-ride disconnect alert, and an actual ride.
@@ -114,6 +115,9 @@ Things to know:
 - **A quick run of shifts to harder gears can show as one jump** (1, then 5). The gearbox reports only the
   gear it lands in; the author's guess is that it holds those shifts until the crank is in its low-torque
   position and then makes them in one go. Shifts to easier gears show one by one.
+- **The gearbox stays awake while the Karoo is connected.** Left alone it switches itself off after a few
+  minutes; connected, it was still on after 77 minutes without a shift. Its battery level did not move in
+  that time, but it is a reason not to leave the Karoo on next to the bike for days.
 - **The gearbox accepts one Bluetooth connection.** Close the Pinion phone app (or switch off the phone's
   Bluetooth) or the Karoo will not find the gearbox.
 - **Nothing scans unless you use the fields.** The extension only looks for the gearbox while the active
