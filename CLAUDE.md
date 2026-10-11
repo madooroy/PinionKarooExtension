@@ -26,8 +26,12 @@ Smart.Shift (Priority Gemini), bike stationary.
 - Walking out of range dropped the link and it did not come back (expected: no advertising after a drop). After a
   battery unplug the gearbox advertised with the same address and the saved-address scan picked it up, twice.
 - Shifts to easier gears are notified one by one, about 0.2 s apart. A quick run to harder gears is notified as
-  one jump (1 then 5, 5 then 10); with pauses of about 0.5 s each step is notified. Author's guess: the gearbox
-  holds upshifts until the left crank is at the top (low torque) and then makes them at once. Nothing is lost
+  one jump (1 then 5, 5 then 10); with pauses of about 0.5 s each step is notified. Likely cause: the gearbox
+  holds upshifts until the cranks are vertical and then makes them at once. Pinion's Smart.Shift manual of
+  2022-07-26 (e-bike version, <https://pinion.eu/wp-content/uploads/2023/11/Smart.Shift_Benutzerhandbuch_2022-07-26.pdf>)
+  says on p. 12 that a shift is carried out when the cranks reach the vertical position, and p. 11 that the left
+  crank carries a sensor magnet. It says this of shifts in general, yet the downshifts here were immediate with
+  the cranks still. That manual does not cover Bluetooth or the sleep timeout. Nothing is lost
   on the Karoo side.
 - Read replies are padded to 13 bytes and the padding can hold a stale byte from the previous reply
   (`02 01 01 61 02 07 22 00 ...`); only the declared length is parsed.

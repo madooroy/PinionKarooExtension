@@ -113,8 +113,8 @@ Things to know:
   the Karoo can fix: hold the shift button for three seconds again. During a ride the Karoo shows an alert
   telling you so.
 - **A quick run of shifts to harder gears can show as one jump** (1, then 5). The gearbox reports only the
-  gear it lands in; the author's guess is that it holds those shifts until the crank is in its low-torque
-  position and then makes them in one go. Shifts to easier gears show one by one.
+  gear it lands in. Pinion's manual says a shift is carried out when the cranks reach the vertical position,
+  so several quick presses are probably held and then made in one go. Shifts to easier gears show one by one.
 - **The gearbox stays awake while the Karoo is connected.** Left alone it switches itself off after a few
   minutes; connected, it was still on after 77 minutes without a shift. Its battery level did not move in
   that time, but it is a reason not to leave the Karoo on next to the bike for days.
