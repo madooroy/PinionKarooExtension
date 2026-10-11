@@ -38,6 +38,16 @@ class MainActivity : Activity() {
             setText(R.string.main_forget)
             setOnClickListener { client.forget() }
         }
+        // Test setting: which 60 s reads are sent. Each tap moves to the next mode.
+        val poll = Button(this).apply {
+            text = "Poll: ${client.pollMode.label}"
+            setOnClickListener {
+                val modes = PollMode.values()
+                val next = modes[(client.pollMode.ordinal + 1) % modes.size]
+                client.pollMode = next
+                text = "Poll: ${next.label}"
+            }
+        }
         // The button goes above the help text and everything scrolls: on the Karoo 2's small screen
         // a button at the bottom ended up off screen.
         setContentView(
@@ -48,6 +58,7 @@ class MainActivity : Activity() {
                         setPadding(padding, padding, padding, padding)
                         addView(status)
                         addView(forget)
+                        addView(poll)
                         addView(help)
                     },
                 )

@@ -54,6 +54,17 @@ enum class PinionLink {
     CONNECTED,
 }
 
+/**
+ * What the 60 second poll asks the gearbox for. Selectable on the status screen, to find out on real
+ * hardware what keeps the gearbox awake; rides should use [GEAR_AND_BATTERY].
+ */
+enum class PollMode(val label: String, val gear: Boolean, val battery: Boolean) {
+    GEAR_AND_BATTERY("gear + battery", true, true),
+    GEAR_ONLY("gear only", true, false),
+    BATTERY_ONLY("battery only", false, true),
+    OFF("off", false, false),
+}
+
 data class PinionState(
     val link: PinionLink = PinionLink.IDLE,
     val gear: Int? = null,
@@ -82,6 +93,14 @@ class PinionBleClient private constructor(private val context: Context) {
     /** Address of the gearbox we are locked to, or null if the next gearbox seen will be adopted. */
     val savedAddress: String?
         get() = prefs.getString(KEY_ADDRESS, null)
+
+    /** Read at every poll, so a change applies to the open connection from the next poll on. */
+    var pollMode: PollMode
+        get() = PollMode.values().firstOrNull { it.name == prefs.getString(KEY_POLL_MODE, null) } ?: PollMode.GEAR_AND_BATTERY
+        set(value) {
+            Timber.i("Poll mode: ${value.label}")
+            prefs.edit().putString(KEY_POLL_MODE, value.name).apply()
+        }
 
     /**
      * Reference counted: the connection runs while at least one caller has started it. The callers are
@@ -327,8 +346,10 @@ class PinionBleClient private constructor(private val context: Context) {
                 if (event != null) {
                     handleUnsolicited(event)
                 } else {
-                    pollGear()
-                    readBattery()
+                    val mode = pollMode
+                    if (mode.gear) pollGear()
+                    if (mode.battery) readBattery()
+                    if (mode == PollMode.OFF) Timber.d("Poll skipped (poll mode off)")
                     nextPoll = SystemClock.elapsedRealtime() + POLL_MS
                 }
             }
@@ -434,6 +455,7 @@ class PinionBleClient private constructor(private val context: Context) {
 
     companion object {
         private const val KEY_ADDRESS = "gearbox_address"
+        private const val KEY_POLL_MODE = "poll_mode"
 
         private const val PRECONDITION_POLL_MS = 5_000L
         private const val RETRY_DELAY_MS = 1_000L

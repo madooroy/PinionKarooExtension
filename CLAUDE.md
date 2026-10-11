@@ -79,7 +79,7 @@ Open questions to settle on the real hardware:
 ## Layout
 
 - `PinionProtocol.kt`: UUIDs, request encoding, reply decoding. Pure Kotlin, covered by `PinionProtocolTest`.
-- `PinionBleClient.kt`: scan, connect, subscribe, poll gear and battery every 60 s (the gear poll corrects a lost notification and logs "Gear poll"), retry forever. Publishes `StateFlow<PinionState>`. Process-wide singleton. Runs only while the active ride profile contains a Pinion field (`ActiveRideProfile` event, handled in the service) or the status activity is open, and for 2 minutes after. Field streams are no use for this: Karoo keeps them running whatever profile is open.
+- `PinionBleClient.kt`: scan, connect, subscribe, poll gear and battery every 60 s (the gear poll corrects a lost notification and logs "Gear poll"; the status screen has a test button that switches the poll between gear + battery, gear only, battery only and off, kept in prefs), retry forever. Publishes `StateFlow<PinionState>`. Process-wide singleton. Runs only while the active ride profile contains a Pinion field (`ActiveRideProfile` event, handled in the service) or the status activity is open, and for 2 minutes after. Field streams are no use for this: Karoo keeps them running whatever profile is open.
 - `extension/PinionExtensionService.kt`: the `KarooExtension` service; owns the client's lifetime, requests the BT radio from Karoo, raises an in-ride alert on disconnect.
 - `extension/PinionDataType.kt`: one class for both fields; it only streams a value, Karoo draws the field.
 - `MainActivity.kt`: requests Bluetooth/location runtime permissions, shows live status, "Forget gearbox".
