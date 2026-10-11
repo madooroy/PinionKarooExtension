@@ -320,16 +320,35 @@ class PinionBleClient private constructor(private val context: Context) {
             read(Parameter.CURRENT_GEAR)?.let { onGear(byteArrayOf(it.toByte())) }
             readBattery()
 
-            var nextBatteryRead = SystemClock.elapsedRealtime() + BATTERY_POLL_MS
+            var nextPoll = SystemClock.elapsedRealtime() + POLL_MS
             while (true) {
-                val wait = nextBatteryRead - SystemClock.elapsedRealtime()
+                val wait = nextPoll - SystemClock.elapsedRealtime()
                 val event = if (wait > 0) withTimeoutOrNull(wait) { events.receive() } else null
                 if (event != null) {
                     handleUnsolicited(event)
                 } else {
+                    pollGear()
                     readBattery()
-                    nextBatteryRead = SystemClock.elapsedRealtime() + BATTERY_POLL_MS
+                    nextPoll = SystemClock.elapsedRealtime() + POLL_MS
                 }
+            }
+        }
+
+        /** Re-reads the gear so that a lost notification is put right within one poll interval. */
+        private suspend fun pollGear() {
+            val raw = read(Parameter.CURRENT_GEAR) ?: return
+            val gear = PinionProtocol.parseGear(byteArrayOf(raw.toByte()), _state.value.gearCount)
+            if (gear == null) {
+                Timber.w("Ignoring out of range polled gear $raw")
+                return
+            }
+            // A notification handled while the reply was awaited has already updated the state
+            val shown = _state.value.gear
+            if (gear == shown) {
+                Timber.d("Gear poll: $gear")
+            } else {
+                Timber.w("Gear poll: $gear, but the field showed $shown (missed notification?)")
+                _state.update { it.copy(gear = gear) }
             }
         }
 
@@ -422,7 +441,7 @@ class PinionBleClient private constructor(private val context: Context) {
         private const val SCAN_RESTART_MS = 10 * 60_000L
         private const val CONNECT_TIMEOUT_MS = 10_000L
         private const val GATT_TIMEOUT_MS = 5_000L
-        private const val BATTERY_POLL_MS = 60_000L
+        private const val POLL_MS = 60_000L
 
         val REQUIRED_PERMISSIONS_S = arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
         val REQUIRED_PERMISSIONS_LEGACY = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
