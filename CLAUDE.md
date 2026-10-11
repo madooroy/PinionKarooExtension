@@ -14,15 +14,16 @@ battery, disconnect alert and reconnect all checked 2026-10-07.
 Smart.Shift (Priority Gemini), bike stationary.
 - Gear field follows shifts; gear count read as 12; battery read 89.23 % falling to 88.55 % during the shifting,
   then 88.55 % on every read for the 69 idle minutes that were logged.
-- One connection held from 17:48 to the last export at 19:39 (111 minutes) with no drop. The exports have gaps
+- One connection held from 17:48 to the last export at 19:50 (122 minutes) with no drop. The exports have gaps
   (laptop asleep, Karoo log buffer), so this rests on the 60 s polls keeping one unbroken phase and on this
   gearbox being unable to reconnect unaided. Tim Angus's Garmin data field drops after about 90 s
   (<https://timang.us/2026-10-08-pinion-garmin-datafield/>); that is not seen here.
 - From about 18:25 two Flare RT lights and a Garmin Varia were connected to the Karoo over ANT+ (traffic visible
   in the log under tag `antradio`), from 19:30 a Coros heart rate sensor over BLE, and from about 19:37 Favero
   Assioma Pro MX pedals over ANT+; no effect on the link.
-- The gearbox does not go to sleep while connected: last shift 18:08:30, still answering at 19:25, where the
-  author expects it to switch off within about 10 minutes when idle. Not known whether the open link or the
+- The gearbox does not go to sleep while connected: no shift or crank movement from 18:08:30 to about
+  19:37 and it answered every poll. The author believes it normally switches off after some minutes idle, but the
+  time is not known (not in the manual). Not known whether the open link or the
   60 s reads keep it awake (would need a build without the poll to tell).
 - Walking out of range dropped the link and it did not come back (expected: no advertising after a drop). After a
   battery unplug the gearbox advertised with the same address and the saved-address scan picked it up, twice.
@@ -71,7 +72,7 @@ Source: Tim Angus's reverse engineering, <https://github.com/timangus/garmin-con
 
 Open questions to settle on the real hardware:
 - How long the advertising window lasts after the button hold (and after a power-on).
-- Whether the connection holds on a real ride (it held 111 minutes stationary).
+- Whether the connection holds on a real ride (it held 122 minutes stationary).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap).
 
