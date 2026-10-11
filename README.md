@@ -19,11 +19,16 @@ They are ordinary Karoo fields, so they look and behave like the built-in ones.
 
 ## Status
 
-**The gear field works with a real gearbox.** In October 2026 the author connected a **Karoo 2** to the
-Smart.Shift box on his Priority Gemini, and the Pinion Gear field followed the shifts through the gears.
-The Pinion Battery field, the disconnect alert and reconnecting have not been checked on real hardware yet.
+**Works with a real gearbox.** On 11 October 2026 the author ran it on a **Karoo 2** with the Smart.Shift
+box on his Priority Gemini, on a stationary bike:
 
-Everything else was tested on a Karoo 2 against a simulated gearbox
+- the Pinion Gear field followed every shift, and the Pinion Battery field showed a plausible level (89 %);
+- the connection stayed up for more than 20 minutes, until the test was ended;
+- after the gearbox was switched off and on, the Karoo found the remembered gearbox and connected again.
+
+Not yet checked on real hardware: the in-ride disconnect alert, and an actual ride.
+
+It was first developed on a Karoo 2 against a simulated gearbox
 ([tools/fake_pinion.py](tools/fake_pinion.py)) that speaks the protocol as documented by the Garmin
 project credited below. Against the simulator, connecting, gear changes, battery, the disconnect alert and
 reconnecting all work.
@@ -32,7 +37,8 @@ reconnecting all work.
 (he tried both). That problem started before this extension existed, it looks like a fault in that
 Smart.Shift box, and Pinion has been contacted about it. What did work: after a reset that involved
 unplugging the Smart.Shift battery, the gearbox went into pairing mode by itself when it was switched on
-again, and the Karoo connected. On that gearbox, connecting again means unplugging the battery again.
+again, and the Karoo connected. On that gearbox, connecting again after a dropped connection means
+unplugging the battery again.
 
 The extension only reads from the gearbox (gear, battery level, number of gears). It does not change any
 gearbox settings.
@@ -105,6 +111,9 @@ Things to know:
 - **If the connection drops, the gearbox stops advertising.** That is how the gearbox works, not something
   the Karoo can fix: hold the shift button for three seconds again. During a ride the Karoo shows an alert
   telling you so.
+- **A quick run of shifts to harder gears can show as one jump** (1, then 5). The gearbox reports only the
+  gear it lands in; the author's guess is that it holds those shifts until the crank is in its low-torque
+  position and then makes them in one go. Shifts to easier gears show one by one.
 - **The gearbox accepts one Bluetooth connection.** Close the Pinion phone app (or switch off the phone's
   Bluetooth) or the Karoo will not find the gearbox.
 - **Nothing scans unless you use the fields.** The extension only looks for the gearbox while the active

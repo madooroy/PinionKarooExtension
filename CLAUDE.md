@@ -10,9 +10,21 @@ Builds, and the protocol unit tests pass (first build 2026-10-07: Gradle 9.1.0, 
 Android Studio's bundled JDK 25). Works on a Karoo 2 against the fake gearbox `tools/fake_pinion.py` (Raspberry Pi, Bumble): connect, shifts,
 battery, disconnect alert and reconnect all checked 2026-10-07.
 
-**Real gearbox (reported 2026-10-11):** connected to the author's Smart.Shift (Priority Gemini) on the Karoo 2 and
-the gear field followed shifts through the gears. Not yet checked on real hardware: the battery field, the
-disconnect alert, reconnecting.
+**Real gearbox (2026-10-11, logcat exports from the session):** run on the Karoo 2 against the author's
+Smart.Shift (Priority Gemini), bike stationary.
+- Gear field follows shifts; gear count read as 12; battery read 89.23 % falling to 88.53 % over 20 minutes.
+- One connection held from 17:48 to the last export at 18:09 with no drop (the 60 s polls kept one unbroken
+  phase). Tim Angus's Garmin data field drops after about 90 s
+  (<https://timang.us/2026-10-08-pinion-garmin-datafield/>); that is not seen here.
+- Walking out of range dropped the link and it did not come back (expected: no advertising after a drop). After a
+  battery unplug the gearbox advertised with the same address and the saved-address scan picked it up, twice.
+- Shifts to easier gears are notified one by one, about 0.2 s apart. A quick run to harder gears is notified as
+  one jump (1 then 5, 5 then 10); with pauses of about 0.5 s each step is notified. Author's guess: the gearbox
+  holds upshifts until the left crank is at the top (low torque) and then makes them at once. Nothing is lost
+  on the Karoo side.
+- Read replies are padded to 13 bytes and the padding can hold a stale byte from the previous reply
+  (`02 01 01 61 02 07 22 00 ...`); only the declared length is parsed.
+- Not yet checked on real hardware: the in-ride disconnect alert, an actual ride.
 
 That gearbox does not enter pairing mode from either shift button (a fault that predates the extension). It
 advertised by itself at power-on after a reset that involved unplugging the Smart.Shift battery, and that is how
@@ -44,9 +56,8 @@ Source: Tim Angus's reverse engineering, <https://github.com/timangus/garmin-con
   the client just scans until that happens and the field shows "Hold shift 3s".
 
 Open questions to settle on the real hardware:
-- Whether the battery read (`64 61 01`) returns a believable value.
 - How long the advertising window lasts after the button hold (and after a power-on).
-- Whether the BLE address is stable (assumed yes: after the first connection the scan filters on the saved address).
+- Whether the connection holds on a real ride (it held 20 minutes stationary).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap).
 
