@@ -28,7 +28,7 @@ box on his Priority Gemini, on a stationary bike:
   part of that time;
 - after the gearbox was switched off and on, the Karoo found the remembered gearbox and connected again.
 
-Not yet checked on real hardware: the in-ride disconnect alert, and an actual ride.
+The disconnect alert was also seen to work. Not yet checked: an actual ride.
 
 It was first developed on a Karoo 2 against a simulated gearbox
 ([tools/fake_pinion.py](tools/fake_pinion.py)) that speaks the protocol as documented by the Garmin
@@ -117,9 +117,11 @@ Things to know:
   in. Pinion's manual says a shift is carried out when the cranks reach the vertical position, and in testing
   several quick presses were held until then and made in one go. Shifts to easier gears with the cranks still
   are immediate and show one by one.
-- **The gearbox stays awake while the Karoo is connected.** Left alone it switches itself off after a
-  while; connected, it was still on after almost 90 minutes without a shift. Its battery level did not move in
-  that time, but it is a reason not to leave the Karoo on next to the bike for days.
+- **The extension keeps the gearbox awake.** Left alone, the gearbox switches itself off 8 minutes after
+  the last shift, and that ends the Bluetooth connection too. So once a minute the extension reads the gear
+  and battery level, which resets that timer: with those reads the gearbox was still on after almost 90
+  minutes without a shift, and its battery level did not move. It is a reason not to leave the Karoo on next
+  to the bike for days.
 - **The gearbox accepts one Bluetooth connection.** Close the Pinion phone app (or switch off the phone's
   Bluetooth) or the Karoo will not find the gearbox.
 - **Nothing scans unless you use the fields.** The extension only looks for the gearbox while the active

@@ -23,8 +23,16 @@ Smart.Shift (Priority Gemini), bike stationary.
   Assioma Pro MX pedals over ANT+; no effect on the link.
 - The gearbox does not go to sleep while connected: no shift or crank movement from 18:08:30 to about
   19:37 and it answered every poll. The author believes it normally switches off after some minutes idle, but the
-  time is not known (not in the manual). Not known whether the open link or the
-  60 s reads keep it awake (would need a build without the poll to tell).
+  time is not in the manual.
+- **It is the 60 s reads that keep it awake, and its idle timeout is 8 minutes.** With the poll set to off
+  (status screen button) and the bike untouched: connected 20:16:14, last read 20:16:16.7, link lost at
+  20:24:20.7 with GATT status 8 (supervision timeout: the gearbox goes silent, it does not send a disconnect).
+  That is 480 s after the last read plus a few seconds of link timeout. Karoo's Bluetooth stayed on throughout.
+  So an open link alone does not keep the gearbox awake, and without the poll a rider who does not shift for
+  8 minutes loses the connection and has to put the gearbox in pairing mode again. Keep the poll on. Not tested:
+  whether the gear read or the battery read alone is enough.
+- The disconnect alert was shown by the ride app at that drop (HHApp `IN_RIDE_NOTIFICATIONS`,
+  `EXTENSION-io.github.madooroy.pinionkaroo`), and both fields went to Searching.
 - Walking out of range dropped the link and it did not come back (expected: no advertising after a drop). After a
   battery unplug the gearbox advertised with the same address and the saved-address scan picked it up, twice.
 - Shifts to easier gears are notified one by one, about 0.2 s apart. A quick run to harder gears is notified as
@@ -39,7 +47,7 @@ Smart.Shift (Priority Gemini), bike stationary.
   on the Karoo side.
 - Read replies are padded to 13 bytes and the padding can hold a stale byte from the previous reply
   (`02 01 01 61 02 07 22 00 ...`); only the declared length is parsed.
-- Not yet checked on real hardware: the in-ride disconnect alert, an actual ride.
+- Not yet checked on real hardware: an actual ride.
 
 That gearbox does not enter pairing mode from either shift button (a fault that predates the extension). It
 advertised by itself at power-on after a reset that involved unplugging the Smart.Shift battery, and that is how
