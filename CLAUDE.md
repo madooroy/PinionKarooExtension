@@ -88,6 +88,10 @@ Open questions to settle on the real hardware:
   switches off and the link is lost. Test: Karoo off USB, ride page, let the screen go off, 15 minutes. If it
   drops, keeping the reads going needs a wake lock or a foreground service.
 - How long the advertising window lasts after the button hold (and after a power-on).
+- Needs a working Smart.Shift (the author's cannot advertise without a battery unplug): does it advertise again
+  when it wakes from its 8 minute sleep (by a shift or a crank turn), and does the Karoo then reconnect from the
+  ride page by itself? The code keeps scanning from the ride page (seen at 20:24:21 after the idle drop), so it
+  should. If so, the disconnect alert's "hold the rear shift button" wording may be wrong; left as is until then.
 - Whether the connection holds on a real ride (it held 122 minutes stationary).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap).
