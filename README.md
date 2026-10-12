@@ -118,8 +118,8 @@ Things to know:
   several quick presses were held until then and made in one go. Shifts to easier gears with the cranks still
   are immediate and show one by one.
 - **The extension keeps the gearbox awake.** Left alone, the gearbox switches itself off 8 minutes after
-  the last shift, and that ends the Bluetooth connection too. So once a minute the extension reads the gear
-  and battery level, which resets that timer: with those reads the gearbox was still on after almost 90
+  the last shift, and that ends the Bluetooth connection too. So the extension reads the gear once a minute
+  and the battery level every 5 minutes, which resets that timer: with those reads the gearbox was still on after almost 90
   minutes without a shift, and its battery level did not move. It is a reason not to leave the Karoo on next
   to the bike for days.
 - **The gearbox accepts one Bluetooth connection.** Close the Pinion phone app (or switch off the phone's
