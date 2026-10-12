@@ -82,6 +82,11 @@ Open questions to settle on the real hardware:
 - Whether one read alone keeps the gearbox awake. Test: connect, set the status screen button to "battery only",
   leave the bike untouched 12 minutes (the idle timeout is 8); if still connected, switch to "gear only" for
   another 12. Set it back to "gear + battery" afterwards.
+- Whether the reads keep going with the Karoo on its own battery. Every test so far had it on USB power from
+  the laptop, where Android does not go into its power-saving state. Unplugged, with the screen off (ride paused
+  for lunch, say), Android 8 can hold back the extension's timers; if the reads stop for 8 minutes the gearbox
+  switches off and the link is lost. Test: Karoo off USB, ride page, let the screen go off, 15 minutes. If it
+  drops, keeping the reads going needs a wake lock or a foreground service.
 - How long the advertising window lasts after the button hold (and after a power-on).
 - Whether the connection holds on a real ride (it held 122 minutes stationary).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
