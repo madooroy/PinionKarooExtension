@@ -104,6 +104,10 @@ Karoo facts that shaped the code (the layout ones found on a Karoo 2, 2026-10-07
 - In the profile editor Karoo draws its own sample number (42) for a numeric field; the extension is not asked.
   Only graphical fields are told about preview mode (`ViewConfig.preview`). Feature request for a sample value:
   <https://github.com/hammerheadnav/karoo-ext/issues/93> (Karoo 2 build 1.613.2351.12, karoo-ext 1.1.9).
+- Karoo has no Bluetooth switch for the rider; it turns the radio on and off itself. On 2026-10-11 it was off
+  (`SensorServiceModel(... bluetoothEnabled=false ...)` in the log) while the extension was installed and the
+  status screen open, and a running scan then reports nothing and no error. The scan now watches
+  `adapter.isEnabled`, and the service repeats `RequestBluetooth` while the client reports BLUETOOTH_OFF.
 - Screenshots for checking layout: `adb exec-out screencap -p > shot.png`.
 
 ## Build and install

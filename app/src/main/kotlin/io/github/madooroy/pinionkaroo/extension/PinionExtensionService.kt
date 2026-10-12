@@ -15,6 +15,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -57,6 +59,21 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.0") {
         }
         karooSystem.addConsumer<ActiveRideProfile> { event -> onActiveProfile(event.profile) }
         scope.launch { alertOnDisconnect() }
+        scope.launch { keepBluetoothOn() }
+    }
+
+    /**
+     * Karoo has no Bluetooth switch for the rider: it turns the radio on and off itself, and was seen
+     * to turn it off under a running extension. Ask again for as long as the client finds it off.
+     */
+    private suspend fun keepBluetoothOn() {
+        client.state.map { it.link == PinionLink.BLUETOOTH_OFF }.distinctUntilChanged().collectLatest { off ->
+            while (off) {
+                Timber.i("Bluetooth is off, asking Karoo to turn it on")
+                karooSystem.dispatch(RequestBluetooth(extension))
+                delay(BLUETOOTH_REQUEST_INTERVAL_MS)
+            }
+        }
     }
 
     @Synchronized
@@ -108,5 +125,6 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.0") {
     companion object {
         /** Must match `id` in res/xml/extension_info.xml */
         const val EXTENSION_ID = "pinion"
+        private const val BLUETOOTH_REQUEST_INTERVAL_MS = 15_000L
     }
 }

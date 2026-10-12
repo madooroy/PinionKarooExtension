@@ -27,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -212,7 +213,23 @@ class PinionBleClient private constructor(private val context: Context) {
         Timber.i(if (address != null) "Scanning for saved gearbox $address" else "Scanning for any Pinion gearbox")
         while (true) {
             // Android silently demotes scans that run longer than 30 minutes, so restart periodically
-            val device = withTimeoutOrNull(SCAN_RESTART_MS) { scanOnce(adapter, filter) }
+            val device = withTimeoutOrNull(SCAN_RESTART_MS) {
+                coroutineScope {
+                    // Karoo switches the radio off by itself when it thinks nothing needs it, and a scan
+                    // then just never reports anything: notice, so the status does not stay on SEARCHING
+                    val watchdog = launch {
+                        while (true) {
+                            delay(PRECONDITION_POLL_MS)
+                            if (!adapter.isEnabled) throw IOException("Bluetooth was turned off while scanning")
+                        }
+                    }
+                    try {
+                        scanOnce(adapter, filter)
+                    } finally {
+                        watchdog.cancel()
+                    }
+                }
+            }
             if (device != null) return device
             Timber.d("Still scanning...")
         }
