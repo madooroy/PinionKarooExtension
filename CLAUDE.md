@@ -79,10 +79,22 @@ Source: Tim Angus's reverse engineering, <https://github.com/timangus/garmin-con
   the client just scans until that happens and the field shows "Hold shift 3s".
 
 Open questions to settle on the real hardware:
+- Whether one read alone keeps the gearbox awake. Test: connect, set the status screen button to "battery only",
+  leave the bike untouched 12 minutes (the idle timeout is 8); if still connected, switch to "gear only" for
+  another 12. Set it back to "gear + battery" afterwards.
 - How long the advertising window lasts after the button hold (and after a power-on).
 - Whether the connection holds on a real ride (it held 122 minutes stationary).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap).
+
+## To do
+
+- After the extension itself closes the link (no users for 2 minutes), the ride field kept showing the last gear
+  (seen 2026-10-11 20:02, right after a reinstall; cause not established).
+- Scanning uses `SCAN_MODE_LOW_LATENCY` for as long as the gearbox is not found, which on a ride after a dropped
+  link is the rest of the ride. Drop to a low-power scan after the first couple of minutes.
+- Then version 0.1.1 and a release: the published 0.1.0 APK has neither the 60 s gear read nor the Bluetooth
+  re-request.
 
 ## Layout
 
