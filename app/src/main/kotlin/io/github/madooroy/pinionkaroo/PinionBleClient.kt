@@ -356,7 +356,12 @@ class PinionBleClient private constructor(private val context: Context) {
             read(Parameter.CURRENT_GEAR)?.let { onGear(byteArrayOf(it.toByte())) }
             readBattery()
 
+            // The gear is re-read every minute. The battery only every few minutes: it drains slowly, and
+            // the reads are also what keeps the gearbox from switching itself off (it does after 8 minutes
+            // without any traffic), so even with gear reads turned off the battery read alone stays well
+            // inside that.
             var nextPoll = SystemClock.elapsedRealtime() + POLL_MS
+            var pollCount = 0
             while (true) {
                 val wait = nextPoll - SystemClock.elapsedRealtime()
                 val event = if (wait > 0) withTimeoutOrNull(wait) { events.receive() } else null
@@ -364,8 +369,10 @@ class PinionBleClient private constructor(private val context: Context) {
                     handleUnsolicited(event)
                 } else {
                     val mode = pollMode
+                    pollCount++
                     if (mode.gear) pollGear()
-                    if (mode.battery) readBattery()
+                    // In "battery only" test mode read it every minute, so the test isolates the battery read
+                    if (mode.battery && (!mode.gear || pollCount % BATTERY_POLLS == 0)) readBattery()
                     if (mode == PollMode.OFF) Timber.d("Poll skipped (poll mode off)")
                     nextPoll = SystemClock.elapsedRealtime() + POLL_MS
                 }
@@ -481,6 +488,9 @@ class PinionBleClient private constructor(private val context: Context) {
         private const val CONNECT_TIMEOUT_MS = 10_000L
         private const val GATT_TIMEOUT_MS = 5_000L
         private const val POLL_MS = 60_000L
+
+        /** Battery is read on every this many polls: every 5 minutes. Must stay under the 8 minute idle cut-off. */
+        private const val BATTERY_POLLS = 5
 
         val REQUIRED_PERMISSIONS_S = arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
         val REQUIRED_PERMISSIONS_LEGACY = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
