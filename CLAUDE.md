@@ -52,7 +52,13 @@ Smart.Shift (Priority Gemini), bike stationary.
 That gearbox does not enter pairing mode from either shift button (a fault that predates the extension). It
 advertised by itself at power-on after a reset that involved unplugging the Smart.Shift battery, and that is how
 the connection was made; connecting again needs the battery unplugged again. So a second way into advertising
-exists (power-on after a battery disconnect), at least on this unit.
+exists (power-on after a battery disconnect). Pinion's app FAQ confirms both ways as official
+(<https://service.pinion.eu/en/support/solutions/articles/36000505964-pinion-smart-shift-app>): hold the shift button
+without the Pinion logo for 3 s with power connected, or on non-e-bikes disconnect and reconnect the Smart.Shift
+battery or plug; on e-bikes, switching the bike on. Either way pairing mode lasts two minutes (LED flashing blue).
+The FAQ also says that with non-Pinion shifters you have to find out which button does it. So only the button
+route is broken on this unit. Parameter `50 25 00` (REVERSE_TRIGGER_MAPPING in Tim Angus's library, values 1/2)
+may be worth reading.
 
 ## BLE protocol
 
@@ -87,7 +93,7 @@ Open questions to settle on the real hardware:
   for lunch, say), Android 8 can hold back the extension's timers; if the reads stop for 8 minutes the gearbox
   switches off and the link is lost. Test: Karoo off USB, ride page, let the screen go off, 15 minutes. If it
   drops, keeping the reads going needs a wake lock or a foreground service.
-- How long the advertising window lasts after the button hold (and after a power-on).
+- How long the advertising window lasts: two minutes according to Pinion's FAQ (see above); not measured.
 - Needs a working Smart.Shift (the author's cannot advertise without a battery unplug): does it advertise again
   when it wakes from its 8 minute sleep (by a shift or a crank turn), and does the Karoo then reconnect from the
   ride page by itself? The code keeps scanning from the ride page (seen at 20:24:21 after the idle drop), so it
