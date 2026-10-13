@@ -58,7 +58,9 @@ without the Pinion logo for 3 s with power connected, or on non-e-bikes disconne
 battery or plug; on e-bikes, switching the bike on. Either way pairing mode lasts two minutes (LED flashing blue).
 The FAQ also says that with non-Pinion shifters you have to find out which button does it. So only the button
 route is broken on this unit. Parameter `50 25 00` (REVERSE_TRIGGER_MAPPING in Tim Angus's library, values 1/2)
-may be worth reading.
+may be worth reading. The LED never shows blue on this unit, not even after a battery unplug, when the Karoo log
+proves it is advertising: green at power-on, then off, flashing with shifts. So the missing blue light does not
+mean no advertising. Untested: whether the 3 s button hold makes it advertise too (with the Karoo scanning).
 
 ## BLE protocol
 
