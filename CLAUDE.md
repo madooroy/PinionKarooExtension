@@ -60,7 +60,12 @@ The FAQ also says that with non-Pinion shifters you have to find out which butto
 route is broken on this unit. Parameter `50 25 00` (REVERSE_TRIGGER_MAPPING in Tim Angus's library, values 1/2)
 may be worth reading. The LED never shows blue on this unit, not even after a battery unplug, when the Karoo log
 proves it is advertising: green at power-on, then off, flashing with shifts. So the missing blue light does not
-mean no advertising. Untested: whether the 3 s button hold makes it advertise too (with the Karoo scanning).
+mean no advertising. Tested 2026-10-14 with nRF Connect's scanner on an iPhone: once the gearbox had dropped out of the scan
+list after an unplug, the 3 s hold gave the usual slow beeps (so the hold is recognised) but the gearbox did not
+appear in the scanner. So on this unit the button-started pairing mode does not start advertising. When it does
+advertise (after an unplug) it sends a packet every 25-60 ms at about -50 dBm, so the radio itself is fine. The
+advertisement's manufacturer data (company ID 0xFFFF) holds the serial number as ASCII digits, which could
+identify a gearbox without connecting to it.
 
 ## BLE protocol
 
