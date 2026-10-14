@@ -15,8 +15,7 @@ Smart.Shift (Priority Gemini), bike stationary.
 - Gear field follows shifts; gear count read as 12; battery read 89.23 % falling to 88.55 % during the shifting,
   then 88.55 % on every read for the 69 idle minutes that were logged.
 - One connection held from 17:48 to the last export at 19:50 (122 minutes) with no drop. The exports have gaps
-  (laptop asleep, Karoo log buffer), so this rests on the 60 s polls keeping one unbroken phase and on this
-  gearbox being unable to reconnect unaided. Tim Angus's Garmin data field drops after about 90 s
+  (laptop asleep, Karoo log buffer), so this rests on the 60 s polls keeping one unbroken phase. Tim Angus's Garmin data field drops after about 90 s
   (<https://timang.us/2026-10-08-pinion-garmin-datafield/>); that is not seen here.
 - From about 18:25 two Flare RT lights and a Garmin Varia were connected to the Karoo over ANT+ (traffic visible
   in the log under tag `antradio`), from 19:30 a Coros heart rate sensor over BLE, and from about 19:37 Favero
@@ -34,7 +33,7 @@ Smart.Shift (Priority Gemini), bike stationary.
 - The disconnect alert was shown by the ride app at that drop (HHApp `IN_RIDE_NOTIFICATIONS`,
   `EXTENSION-io.github.madooroy.pinionkaroo`), and both fields went to Searching.
 - Walking out of range dropped the link and it did not come back (expected: no advertising after a drop). After a
-  battery unplug the gearbox advertised with the same address and the saved-address scan picked it up, twice.
+  power cycle the gearbox advertised with the same address and the saved-address scan picked it up.
 - Shifts to easier gears are notified one by one, about 0.2 s apart. A quick run to harder gears is notified as
   one jump (1 then 5, 5 then 10); with pauses of about 0.5 s each step is notified. Likely cause: the gearbox
   holds upshifts until the cranks are vertical and then makes them at once. Pinion's Smart.Shift manual of
@@ -49,23 +48,14 @@ Smart.Shift (Priority Gemini), bike stationary.
   (`02 01 01 61 02 07 22 00 ...`); only the declared length is parsed.
 - Not yet checked on real hardware: an actual ride.
 
-That gearbox does not enter pairing mode from either shift button (a fault that predates the extension). It
-advertised by itself at power-on after a reset that involved unplugging the Smart.Shift battery, and that is how
-the connection was made; connecting again needs the battery unplugged again. So a second way into advertising
-exists (power-on after a battery disconnect). Pinion's app FAQ confirms both ways as official
+Pairing mode, per Pinion's app FAQ
 (<https://service.pinion.eu/en/support/solutions/articles/36000505964-pinion-smart-shift-app>): hold the shift button
-without the Pinion logo for 3 s with power connected, or on non-e-bikes disconnect and reconnect the Smart.Shift
-battery or plug; on e-bikes, switching the bike on. Either way pairing mode lasts two minutes (LED flashing blue).
-The FAQ also says that with non-Pinion shifters you have to find out which button does it. So only the button
-route is broken on this unit. Parameter `50 25 00` (REVERSE_TRIGGER_MAPPING in Tim Angus's library, values 1/2)
-may be worth reading. The LED never shows blue on this unit, not even after a battery unplug, when the Karoo log
-proves it is advertising: green at power-on, then off, flashing with shifts. So the missing blue light does not
-mean no advertising. Tested 2026-10-14 with nRF Connect's scanner on an iPhone: once the gearbox had dropped out of the scan
-list after an unplug, the 3 s hold gave the usual slow beeps (so the hold is recognised) but the gearbox did not
-appear in the scanner. So on this unit the button-started pairing mode does not start advertising. When it does
-advertise (after an unplug) it sends a packet every 25-60 ms at about -50 dBm, so the radio itself is fine. The
-advertisement's manufacturer data (company ID 0xFFFF) holds the serial number as ASCII digits, which could
-identify a gearbox without connecting to it.
+without the Pinion logo for 3 s; on non-e-bikes, disconnect and reconnect the Smart.Shift battery; on e-bikes, switch
+the bike on. It lasts two minutes. While advertising the gearbox sends a packet every 25-60 ms; the advertisement's
+manufacturer data (company ID 0xFFFF) holds the serial number as ASCII digits, which could identify a gearbox without
+connecting to it. Besides the Pinion service the gearbox exposes a standard Cycling Speed and Cadence service, a
+Nordic "Buttonless DFU Without Bonds" service (never write to it), and four unknown Pinion characteristics `03`,
+`05`, `07` (with CCCD) and `12`. A gear notification was once seen as two bytes, `01 34`; only byte 0 is used.
 
 ## BLE protocol
 
@@ -100,29 +90,17 @@ Open questions to settle on the real hardware:
   for lunch, say), Android 8 can hold back the extension's timers; if the reads stop for 8 minutes the gearbox
   switches off and the link is lost. Test: Karoo off USB, ride page, let the screen go off, 15 minutes. If it
   drops, keeping the reads going needs a wake lock or a foreground service.
-- Does the gearbox advertise again after a clean disconnect (one the central asks for, as opposed to a
-  supervision timeout)? nRF Connect on iOS, 2026-10-13: connected 22:05:45 after a battery unplug, then
-  disconnected and reconnected by hand five times between 22:09 and 22:11, each within 1-10 s, well past the
-  2 minute pairing window. Caveat: iOS may keep the radio link up after an app disconnects, so this is not proof.
-  Karoo test: while connected, tap FORGET GEARBOX on the status screen (closes GATT cleanly, then scans for any
-  Pinion) and see whether it reconnects. The same capture showed the gearbox also exposes a standard Cycling Speed
-  and Cadence service, a Nordic "Buttonless DFU Without Bonds" service (never write to it), and four unknown
-  Pinion characteristics `03`, `05`, `07` (with CCCD) and `12`; and a gear notification of two bytes, `01 34`.
-- How long the advertising window lasts: two minutes according to Pinion's FAQ (see above); not measured.
-- Needs a working Smart.Shift (the author's cannot advertise without a battery unplug): does it advertise again
-  when it wakes from its 8 minute sleep (by a shift or a crank turn), and does the Karoo then reconnect from the
-  ride page by itself? The code keeps scanning from the ride page (seen at 20:24:21 after the idle drop), so it
-  should. If so, the disconnect alert's "hold the rear shift button" wording may be wrong; left as is until then.
+- How long the advertising window lasts: two minutes according to Pinion's FAQ; not measured.
+- Does the gearbox advertise again when it wakes from its 8 minute sleep (shift or crank turn), and does the Karoo
+  then reconnect from the ride page by itself? The code keeps scanning from the ride page, so it should. If so, the
+  disconnect alert's "hold the rear shift button" wording may need changing.
+- Does it advertise again after a clean disconnect (FORGET GEARBOX on the status screen)?
 - Whether the connection holds on a real ride (it held 122 minutes stationary).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap).
 
 ## To do
 
-- Pinion is replacing the author's Smart.Shift box (2026-10-14). The new box has a new address, so tap FORGET
-  GEARBOX before its first connection. Then run the checks that needed a working box: pairing by button hold,
-  whether it re-advertises after waking from the 8 minute sleep and the Karoo reconnects from the ride page, and
-  whether the disconnect alert wording is right.
 - After the extension itself closes the link (no users for 2 minutes), the ride field kept showing the last gear
   (seen 2026-10-11 20:02, right after a reinstall; cause not established).
 - Scanning uses `SCAN_MODE_LOW_LATENCY` for as long as the gearbox is not found, which on a ride after a dropped

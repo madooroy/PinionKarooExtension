@@ -35,12 +35,10 @@ It was first developed on a Karoo 2 against a simulated gearbox
 project credited below. Against the simulator, connecting, gear changes, battery, the disconnect alert and
 reconnecting all work.
 
-**A note on pairing.** The author's gearbox will not go into Bluetooth pairing mode from the shift buttons
-(he tried both). That problem started before this extension existed, it looks like a fault in that
-Smart.Shift box, and Pinion has been contacted about it. What did work: after a reset that involved
-unplugging the Smart.Shift battery, the gearbox went into pairing mode by itself when it was switched on
-again, and the Karoo connected. On that gearbox, connecting again after a dropped connection means
-unplugging the battery again.
+**Pairing mode.** Pinion lists three ways to put the gearbox into pairing mode, each lasting two minutes
+([Pinion's app FAQ](https://service.pinion.eu/en/support/solutions/articles/36000505964-pinion-smart-shift-app)):
+hold the shift button without the Pinion logo for 3 seconds; on bikes without a motor, disconnect and
+reconnect the Smart.Shift battery; on e-bikes, switch the bike on.
 
 The extension only reads from the gearbox (gear, battery level, number of gears). It does not change any
 gearbox settings.
