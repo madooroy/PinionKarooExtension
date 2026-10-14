@@ -95,6 +95,14 @@ Open questions to settle on the real hardware:
   for lunch, say), Android 8 can hold back the extension's timers; if the reads stop for 8 minutes the gearbox
   switches off and the link is lost. Test: Karoo off USB, ride page, let the screen go off, 15 minutes. If it
   drops, keeping the reads going needs a wake lock or a foreground service.
+- Does the gearbox advertise again after a clean disconnect (one the central asks for, as opposed to a
+  supervision timeout)? nRF Connect on iOS, 2026-10-13: connected 22:05:45 after a battery unplug, then
+  disconnected and reconnected by hand five times between 22:09 and 22:11, each within 1-10 s, well past the
+  2 minute pairing window. Caveat: iOS may keep the radio link up after an app disconnects, so this is not proof.
+  Karoo test: while connected, tap FORGET GEARBOX on the status screen (closes GATT cleanly, then scans for any
+  Pinion) and see whether it reconnects. The same capture showed the gearbox also exposes a standard Cycling Speed
+  and Cadence service, a Nordic "Buttonless DFU Without Bonds" service (never write to it), and four unknown
+  Pinion characteristics `03`, `05`, `07` (with CCCD) and `12`; and a gear notification of two bytes, `01 34`.
 - How long the advertising window lasts: two minutes according to Pinion's FAQ (see above); not measured.
 - Needs a working Smart.Shift (the author's cannot advertise without a battery unplug): does it advertise again
   when it wakes from its 8 minute sleep (by a shift or a crank turn), and does the Karoo then reconnect from the
