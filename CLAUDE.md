@@ -119,6 +119,10 @@ Open questions to settle on the real hardware:
 
 ## To do
 
+- Pinion is replacing the author's Smart.Shift box (2026-10-14). The new box has a new address, so tap FORGET
+  GEARBOX before its first connection. Then run the checks that needed a working box: pairing by button hold,
+  whether it re-advertises after waking from the 8 minute sleep and the Karoo reconnects from the ride page, and
+  whether the disconnect alert wording is right.
 - After the extension itself closes the link (no users for 2 minutes), the ride field kept showing the last gear
   (seen 2026-10-11 20:02, right after a reinstall; cause not established).
 - Scanning uses `SCAN_MODE_LOW_LATENCY` for as long as the gearbox is not found, which on a ride after a dropped
