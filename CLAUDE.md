@@ -55,7 +55,13 @@ the bike on. It lasts two minutes (measured with nRF Connect after a power-on, 2
 manufacturer data (company ID 0xFFFF) holds the serial number as ASCII digits, which could identify a gearbox without
 connecting to it. Besides the Pinion service the gearbox exposes a standard Cycling Speed and Cadence service, a
 Nordic "Buttonless DFU Without Bonds" service (never write to it), and four unknown Pinion characteristics `03`,
-`05`, `07` (with CCCD) and `12`. A gear notification was once seen as two bytes, `01 34`; only byte 0 is used.
+`05`, `07` (with CCCD) and `12`. A gear notification was once seen as two bytes, `01 34`; only byte 0 is used. The CSC Measurement (0x2A5B) notifies
+about once per crank revolution while pedalling, e.g. `03 00000000 FFFF 1100 D43F`: flags 0x03 claim wheel and crank
+data, but the wheel part is always 0 revolutions with event time 0xFFFF; the crank part is a real cumulative count and
+last event time (1/1024 s), giving 50-65 rpm for a hand-turned crank (2026-10-14). So the gearbox could serve as a
+plain BLE cadence sensor, but paired as a speed sensor it would report nothing useful. One quirk: the last
+notification after the cranks stopped counted one more revolution with an event time one tick earlier than the
+previous one.
 
 ## BLE protocol
 
