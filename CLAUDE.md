@@ -51,7 +51,7 @@ Smart.Shift (Priority Gemini), bike stationary.
 Pairing mode, per Pinion's app FAQ
 (<https://service.pinion.eu/en/support/solutions/articles/36000505964-pinion-smart-shift-app>): hold the shift button
 without the Pinion logo for 3 s; on non-e-bikes, disconnect and reconnect the Smart.Shift battery; on e-bikes, switch
-the bike on. It lasts two minutes. While advertising the gearbox sends a packet every 25-60 ms; the advertisement's
+the bike on. It lasts two minutes (measured with nRF Connect after a power-on, 2026-10-14: about 2 min). While advertising the gearbox sends a packet every 25-60 ms; the advertisement's
 manufacturer data (company ID 0xFFFF) holds the serial number as ASCII digits, which could identify a gearbox without
 connecting to it. Besides the Pinion service the gearbox exposes a standard Cycling Speed and Cadence service, a
 Nordic "Buttonless DFU Without Bonds" service (never write to it), and four unknown Pinion characteristics `03`,
@@ -90,7 +90,6 @@ Open questions to settle on the real hardware:
   for lunch, say), Android 8 can hold back the extension's timers; if the reads stop for 8 minutes the gearbox
   switches off and the link is lost. Test: Karoo off USB, ride page, let the screen go off, 15 minutes. If it
   drops, keeping the reads going needs a wake lock or a foreground service.
-- How long the advertising window lasts: two minutes according to Pinion's FAQ; not measured.
 - Does the gearbox advertise again when it wakes from its 8 minute sleep (shift or crank turn), and does the Karoo
   then reconnect from the ride page by itself? The code keeps scanning from the ride page, so it should. If so, the
   disconnect alert's "hold the rear shift button" wording may need changing.
