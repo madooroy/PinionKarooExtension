@@ -26,7 +26,11 @@ Smart.Shift (Priority Gemini), bike stationary.
 - **It is the 60 s reads that keep it awake, and its idle timeout is 8 minutes.** With the poll set to off
   (status screen button) and the bike untouched: connected 20:16:14, last read 20:16:16.7, link lost at
   20:24:20.7 with GATT status 8 (supervision timeout: the gearbox goes silent, it does not send a disconnect).
-  That is 480 s after the last read plus a few seconds of link timeout. Karoo's Bluetooth stayed on throughout.
+  That is 480 s after the last read plus a few seconds of link timeout. Karoo's Bluetooth stayed on throughout. Confirmed
+  independently with nRF Connect on an iPhone (2026-10-14): last activity a crank turn at 22:14:30.9, iOS reported
+  "connection timed out unexpectedly" at 22:22:31.8, about 481 s later. So crank movement resets the timer too, the
+  timeout does not depend on the central, and the gearbox sends nothing on any subscribed characteristic (`01`, `03`,
+  `05`, `07`, CSC) before it goes silent.
   So an open link alone does not keep the gearbox awake, and without the poll a rider who does not shift for
   8 minutes loses the connection and has to put the gearbox in pairing mode again. Keep the poll on. Not tested:
   whether the gear read or the battery read alone is enough.
