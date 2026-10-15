@@ -64,9 +64,12 @@ once each; not confirmed by repeating. The CSC Measurement (0x2A5B) notifies
 about once per crank revolution while pedalling, e.g. `03 00000000 FFFF 1100 D43F`: flags 0x03 claim wheel and crank
 data, but the wheel part is always 0 revolutions with event time 0xFFFF; the crank part is a real cumulative count and
 last event time (1/1024 s), giving 50-65 rpm for a hand-turned crank (2026-10-14). So the gearbox could serve as a
-plain BLE cadence sensor, but paired as a speed sensor it would report nothing useful. One quirk: the last
-notification after the cranks stopped counted one more revolution with an event time one tick earlier than the
-previous one.
+plain BLE cadence sensor, but paired as a speed sensor it would report nothing useful. CSC Feature reads `0300` (wheel and
+crank data "supported") and Sensor Location reads `05` (left crank, matching the crank magnet). Quirks, each seen
+twice: when the cranks stop, a last notification counts one more revolution with an event time one tick *earlier*
+than the previous one; and about half a minute after stopping the count resets, `03 00000000 FFFF 0000 FFFF`
+(0 revolutions, time 0xFFFF), so a later session starts counting from 1 again. A consumer that treats the count as
+monotonic would see a backwards jump there.
 
 ## BLE protocol
 
