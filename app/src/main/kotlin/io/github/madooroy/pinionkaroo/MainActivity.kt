@@ -23,6 +23,7 @@ class MainActivity : Activity() {
     private var statusJob: Job? = null
     private lateinit var client: PinionBleClient
     private lateinit var status: TextView
+    private var lastState: PinionState? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +37,12 @@ class MainActivity : Activity() {
         }
         val forget = Button(this).apply {
             setText(R.string.main_forget)
-            setOnClickListener { client.forget() }
+            setOnClickListener {
+                client.forget()
+                // The state can come back equal to what it was (SEARCHING, no gear), and a StateFlow does not
+                // emit an equal value, so redraw here or the old address stays on screen
+                lastState?.let { render(it) }
+            }
         }
         // Test setting: which 60 s reads are sent. Each tap moves to the next mode.
         val poll = Button(this).apply {
@@ -79,14 +85,17 @@ class MainActivity : Activity() {
         super.onStart()
         client.start()
         statusJob = scope.launch {
-            client.state.collect { state ->
-                status.text = buildString {
-                    appendLine("Status: ${state.link}")
-                    appendLine("Gearbox: ${client.savedAddress ?: "none saved"}")
-                    appendLine("Gear: ${state.gear ?: "--"} of ${state.gearCount}")
-                    append("Battery: ${state.batteryPercent?.let { "%.1f%%".format(it) } ?: "--"}")
-                }
-            }
+            client.state.collect { state -> render(state) }
+        }
+    }
+
+    private fun render(state: PinionState) {
+        lastState = state
+        status.text = buildString {
+            appendLine("Status: ${state.link}")
+            appendLine("Gearbox: ${client.savedAddress ?: "none saved"}")
+            appendLine("Gear: ${state.gear ?: "--"} of ${state.gearCount}")
+            append("Battery: ${state.batteryPercent?.let { "%.1f%%".format(it) } ?: "--"}")
         }
     }
 
