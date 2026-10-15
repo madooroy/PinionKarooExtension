@@ -60,7 +60,7 @@ of shifting (2026-10-14), so it does not depend on the gear; only byte 0 is used
 subscribed, `03` and `07` sent nothing, and `05` sent once, `00 00 08 20`, about 0.4 s after a burst of six
 downshifts in 0.6 s (8 to 3); meaning unknown. Later, with no shifting, `07` sent `04 09 56 9C 08` once (cause unknown), and
 `03` sent `04` about 12 s after a 3 s pairing hold (slow beeps) made while connected: possibly a state report. A
-second hold in the same connection (slow beeps, then quick beeps) sent nothing on `03`, so not a fixed response. The CSC Measurement (0x2A5B) notifies
+second hold in the same connection (slow beeps, then the quick beeps the box gives when a connection is made) sent nothing on `03`, so not a fixed response. The CSC Measurement (0x2A5B) notifies
 about once per crank revolution while pedalling, e.g. `03 00000000 FFFF 1100 D43F`: flags 0x03 claim wheel and crank
 data, but the wheel part is always 0 revolutions with event time 0xFFFF; the crank part is a real cumulative count and
 last event time (1/1024 s), giving 50-65 rpm for a hand-turned crank (2026-10-14). So the gearbox could serve as a
