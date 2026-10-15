@@ -1,6 +1,7 @@
 package io.github.madooroy.pinionkaroo
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -37,12 +38,7 @@ class MainActivity : Activity() {
         }
         val forget = Button(this).apply {
             setText(R.string.main_forget)
-            setOnClickListener {
-                client.forget()
-                // The state can come back equal to what it was (SEARCHING, no gear), and a StateFlow does not
-                // emit an equal value, so redraw here or the old address stays on screen
-                lastState?.let { render(it) }
-            }
+            setOnClickListener { confirmForget() }
         }
         // Test setting: which 60 s reads are sent. Each tap moves to the next mode.
         val poll = Button(this).apply {
@@ -87,6 +83,22 @@ class MainActivity : Activity() {
         statusJob = scope.launch {
             client.state.collect { state -> render(state) }
         }
+    }
+
+    /** Forgetting means pairing again, which can cost the rider a trip to the gearbox, so ask first. */
+    private fun confirmForget() {
+        val address = client.savedAddress ?: return
+        AlertDialog.Builder(this)
+            .setTitle(R.string.forget_title)
+            .setMessage(getString(R.string.forget_message, address))
+            .setPositiveButton(R.string.forget_confirm) { _, _ ->
+                client.forget()
+                // The state can come back equal to what it was (SEARCHING, no gear), and a StateFlow does not
+                // emit an equal value, so redraw here or the old address stays on screen
+                lastState?.let { render(it) }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
     private fun render(state: PinionState) {
