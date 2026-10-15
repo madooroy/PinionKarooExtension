@@ -12,5 +12,8 @@ class PinionApplication : Application() {
                 super.log(priority, "Pinion", message, t)
             }
         })
+        // And to a file per day on the Karoo, for looking at a ride afterwards (see FileLogTree)
+        Timber.plant(FileLogTree(this))
+        Timber.i("Process started (${runCatching { packageManager.getPackageInfo(packageName, 0).versionName }.getOrNull()})")
     }
 }

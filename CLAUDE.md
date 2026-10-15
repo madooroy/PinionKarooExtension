@@ -134,7 +134,7 @@ Open questions to settle on the real hardware:
 - Then version 0.1.1 and a release. Changes since the published 0.1.0 APK: gear re-read every 60 s and battery
   every 5 minutes (also what keeps the gearbox awake); Bluetooth re-requested from Karoo when it is off, and
   noticed during a scan; poll test button on the status screen; Forget gearbox asks for confirmation and the
-  screen shows the result.
+  screen shows the result; log file on the Karoo for looking at rides afterwards; a missing read reply no longer ends the link.
 
 ## Layout
 
@@ -186,3 +186,6 @@ Karoo facts that shaped the code (the layout ones found on a Karoo 2, 2026-10-07
    ride profile, then hold the rear shift button for 3 seconds.
 
 Debug log: `adb logcat -s Pinion` (every Timber line uses that one tag; requests and replies are logged as hex).
+Every line also goes to `/sdcard/Android/data/io.github.madooroy.pinionkaroo/files/logs/pinion-YYYY-MM-DD.log`
+(`FileLogTree.kt`: one file per day, capped at 2 MB, kept 14 days); fetch with
+`adb pull /sdcard/Android/data/io.github.madooroy.pinionkaroo/files/logs`.

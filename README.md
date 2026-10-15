@@ -135,6 +135,13 @@ Everything the extension does is logged under one tag, including each request an
 adb logcat -s Pinion
 ```
 
+The same lines are also written to a file on the Karoo, one per day, kept for two weeks, so a ride can be
+looked at afterwards. Copy them to the computer with:
+
+```
+adb pull /sdcard/Android/data/io.github.madooroy.pinionkaroo/files/logs
+```
+
 ## The simulated gearbox
 
 [tools/fake_pinion.py](tools/fake_pinion.py) pretends to be a Smart.Shift box, for working on the
