@@ -42,7 +42,8 @@ Smart.Shift (Priority Gemini), bike stationary.
 - **The gearbox can stop answering requests while staying connectable** (2026-10-14, 22:47, Karoo off USB, after
   several clean disconnects and reconnects that evening): every connection succeeded up to the subscriptions, the
   write of the first read request was acknowledged, but no reply came, and the extension dropped the link after 5 s
-  and reconnected, round and round every 7-8 s. A missing reply is now logged and skipped instead of ending the link.
+  and reconnected, round and round every 7-8 s. A missing reply is now logged and skipped instead of ending the link. A power cycle of the gearbox cleared it: at 22:50
+  it connected and answered all three reads within 0.4 s.
 - The disconnect alert was shown by the ride app at that drop (HHApp `IN_RIDE_NOTIFICATIONS`,
   `EXTENSION-io.github.madooroy.pinionkaroo`), and both fields went to Searching.
 - Walking out of range dropped the link and it did not come back (expected: no advertising after a drop). After a
