@@ -465,9 +465,18 @@ class PinionBleClient private constructor(private val context: Context) {
             val written = await("write of $parameter", GATT_TIMEOUT_MS) { it as? GattEvent.CharacteristicWritten }
             if (written.status != BluetoothGatt.GATT_SUCCESS) throw IOException("Request for $parameter failed, status ${written.status}")
 
-            val reply = await("reply to $parameter", GATT_TIMEOUT_MS) {
-                (it as? GattEvent.Changed)?.takeIf { e -> e.uuid == PinionProtocol.RESPONSE_UUID }
-            }.value
+            // A missing reply is not a dead link: seen 2026-10-14 after repeated reconnects, the gearbox accepted
+            // requests but stopped answering them while gear notifications still worked. Dropping the link for it
+            // only started a reconnect loop, so carry on without the value and let the next poll try again.
+            val reply = try {
+                await("reply to $parameter", GATT_TIMEOUT_MS) {
+                    (it as? GattEvent.Changed)?.takeIf { e -> e.uuid == PinionProtocol.RESPONSE_UUID }
+                }.value
+            } catch (e: IOException) {
+                if (e.message?.startsWith("Timed out") != true) throw e
+                Timber.w("No reply to $parameter within ${GATT_TIMEOUT_MS} ms, carrying on without it")
+                return null
+            }
             val value = PinionProtocol.parseReadReply(parameter, reply)
             Timber.d("$parameter: tx [${payload.toHex()}] rx [${reply.toHex()}] -> $value")
             if (value == null) Timber.w("Bad reply to $parameter: [${reply.toHex()}]")

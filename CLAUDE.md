@@ -39,6 +39,10 @@ Smart.Shift (Priority Gemini), bike stationary.
   found it and reconnected straight away, without a button hold. An iPhone with nRF Connect saw the same on
   2026-10-13. So the gearbox stops advertising only after links it loses (out of range, its own idle sleep), not
   after ones the other side closes. How long it advertises after a clean disconnect is not known.
+- **The gearbox can stop answering requests while staying connectable** (2026-10-14, 22:47, Karoo off USB, after
+  several clean disconnects and reconnects that evening): every connection succeeded up to the subscriptions, the
+  write of the first read request was acknowledged, but no reply came, and the extension dropped the link after 5 s
+  and reconnected, round and round every 7-8 s. A missing reply is now logged and skipped instead of ending the link.
 - The disconnect alert was shown by the ride app at that drop (HHApp `IN_RIDE_NOTIFICATIONS`,
   `EXTENSION-io.github.madooroy.pinionkaroo`), and both fields went to Searching.
 - Walking out of range dropped the link and it did not come back (expected: no advertising after a drop). After a
