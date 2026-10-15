@@ -34,6 +34,11 @@ Smart.Shift (Priority Gemini), bike stationary.
   So an open link alone does not keep the gearbox awake, and without the poll a rider who does not shift for
   8 minutes loses the connection and has to put the gearbox in pairing mode again. Keep the poll on. Not tested:
   whether the gear read or the battery read alone is enough.
+- **After a clean disconnect the gearbox advertises again** (2026-10-14): connected about 22:36 after a power-on,
+  FORGET GEARBOX at about 22:41 (GATT closed by the Karoo, well after the 2 minute pairing window), and the Karoo
+  found it and reconnected straight away, without a button hold. An iPhone with nRF Connect saw the same on
+  2026-10-13. So the gearbox stops advertising only after links it loses (out of range, its own idle sleep), not
+  after ones the other side closes. How long it advertises after a clean disconnect is not known.
 - The disconnect alert was shown by the ride app at that drop (HHApp `IN_RIDE_NOTIFICATIONS`,
   `EXTENSION-io.github.madooroy.pinionkaroo`), and both fields went to Searching.
 - Walking out of range dropped the link and it did not come back (expected: no advertising after a drop). After a
@@ -111,7 +116,6 @@ Open questions to settle on the real hardware:
 - Does the gearbox advertise again when it wakes from its 8 minute sleep (shift or crank turn), and does the Karoo
   then reconnect from the ride page by itself? The code keeps scanning from the ride page, so it should. If so, the
   disconnect alert's "hold the rear shift button" wording may need changing.
-- Does it advertise again after a clean disconnect (FORGET GEARBOX on the status screen)?
 - Whether the connection holds on a real ride (it held 122 minutes stationary).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap).
