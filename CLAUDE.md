@@ -60,7 +60,14 @@ Smart.Shift (Priority Gemini), bike stationary.
   on the Karoo side.
 - Read replies are padded to 13 bytes and the padding can hold a stale byte from the previous reply
   (`02 01 01 61 02 07 22 00 ...`); only the declared length is parsed.
-- Not yet checked on real hardware: an actual ride.
+- **Rollers session, 2026-10-16** (ride log file `pinion-2026-10-16.log`): Karoo 2 on its own battery, ride recorded,
+  ANT+ lights, Varia and pedals, BLE heart rate strap. One link from 12:44:41 to 13:45:59, ended only by a clean close
+  after switching to a profile without Pinion fields. Every shift notified, every gear poll matched. A 17 minute
+  lunch-style pause (13:00:47-13:17:36: ride paused, screen gone dark, bike untouched) did not interrupt the 60 s gear
+  and 5 minute battery reads, so Android does not hold back the timers while the Karoo sleeps. On waking the screen,
+  gear and battery were showing while the speed sensor, heart rate strap and pedals had disconnected and came back
+  after a few crank turns.
+- Not yet checked on real hardware: an outdoor ride.
 
 Pairing mode, per Pinion's app FAQ
 (<https://service.pinion.eu/en/support/solutions/articles/36000505964-pinion-smart-shift-app>): hold the shift button
@@ -113,15 +120,10 @@ Open questions to settle on the real hardware:
 - Whether one read alone keeps the gearbox awake. Test: connect, set the status screen button to "battery only",
   leave the bike untouched 12 minutes (the idle timeout is 8); if still connected, switch to "gear only" for
   another 12. Set it back to "gear + battery" afterwards.
-- Whether the reads keep going with the Karoo on its own battery. Every test so far had it on USB power from
-  the laptop, where Android does not go into its power-saving state. Unplugged, with the screen off (ride paused
-  for lunch, say), Android 8 can hold back the extension's timers; if the reads stop for 8 minutes the gearbox
-  switches off and the link is lost. Test: Karoo off USB, ride page, let the screen go off, 15 minutes. If it
-  drops, keeping the reads going needs a wake lock or a foreground service.
 - Does the gearbox advertise again when it wakes from its 8 minute sleep (shift or crank turn), and does the Karoo
   then reconnect from the ride page by itself? The code keeps scanning from the ride page, so it should. If so, the
   disconnect alert's "hold the rear shift button" wording may need changing.
-- Whether the connection holds on a real ride (it held 122 minutes stationary).
+- Whether anything differs outdoors (it held 122 minutes stationary and an hour on rollers).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap).
 
