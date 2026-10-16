@@ -133,10 +133,9 @@ Open questions to settle on the real hardware:
   (seen 2026-10-11 20:02, right after a reinstall; cause not established).
 - Scanning uses `SCAN_MODE_LOW_LATENCY` for as long as the gearbox is not found, which on a ride after a dropped
   link is the rest of the ride. Drop to a low-power scan after the first couple of minutes.
-- Then version 0.1.1 and a release. Changes since the published 0.1.0 APK: gear re-read every 60 s and battery
-  every 5 minutes (also what keeps the gearbox awake); Bluetooth re-requested from Karoo when it is off, and
-  noticed during a scan; poll test button on the status screen; Forget gearbox asks for confirmation and the
-  screen shows the result; log file on the Karoo for looking at rides afterwards; a missing read reply no longer ends the link.
+- Version 0.1.1 (2026-10-16): versionCode 2. The version name is also passed to `KarooExtension` in
+  `PinionExtensionService`; keep the two in step. Release APKs are signed with the debug key of the author's
+  laptop, so they must be built there for an update over an earlier install to work.
 
 ## Layout
 
