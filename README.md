@@ -13,6 +13,10 @@ to the gearbox over Bluetooth and adds two data fields you can put on any ride p
 
 They are ordinary Karoo fields, so they look and behave like the built-in ones.
 
+You don't need the battery field to keep an eye on the battery: when it is at 20 % or less the Karoo shows
+an alert after connecting, and another one if it reaches 10 % during the ride. So on a crowded page (the map
+page has only four fields) the gear field alone is enough.
+
 > **Unofficial.** This project is not affiliated with or endorsed by Pinion, Hammerhead or anyone else.
 > The Bluetooth protocol is not documented by Pinion and may change with a firmware update.
 > Use it at your own risk.

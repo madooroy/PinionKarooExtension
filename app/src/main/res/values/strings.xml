@@ -11,6 +11,10 @@
     <string name="alert_disconnected_title">Pinion disconnected</string>
     <string name="alert_disconnected_detail">Hold the rear shift button for 3 seconds to reconnect</string>
 
+    <string name="alert_battery_low_title">Pinion battery low</string>
+    <string name="alert_battery_very_low_title">Pinion battery very low</string>
+    <string name="alert_battery_low_detail">%1$d%% left. Charge the Smart.Shift battery soon.</string>
+
     <string name="main_forget">Forget gearbox</string>
     <string name="forget_title">Forget gearbox?</string>
     <string name="forget_message">The Karoo will stop looking for %1$s and connect to the next Pinion gearbox it finds in pairing mode.</string>

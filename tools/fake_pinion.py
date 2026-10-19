@@ -255,7 +255,7 @@ class FakeGearbox:
                 self._run(self.set_gear(int(digits)))
             elif key == "b" and digits:
                 self.battery_percent = max(0, min(100, int(digits)))
-                log.info("battery %d %% (the extension reads it once a minute)", self.battery_percent)
+                log.info("battery %d %% (the extension reads it every 5 minutes, and on connecting)", self.battery_percent)
             elif key in "+=":
                 self._run(self.set_gear(self.gear + 1))
             elif key in "-_":

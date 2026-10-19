@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.math.roundToInt
 
 /**
  * Entry point bound by the Karoo system (see AndroidManifest.xml and res/xml/extension_info.xml).
@@ -29,7 +30,7 @@ import timber.log.Timber
  * its pages, so riding another bike with another profile does not scan.
  * (Field streams cannot be used for this: Karoo keeps them running whatever profile is open.)
  */
-class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.1") {
+class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.2") {
     private lateinit var karooSystem: KarooSystemService
     private lateinit var client: PinionBleClient
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -59,6 +60,7 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.1") {
         }
         karooSystem.addConsumer<ActiveRideProfile> { event -> onActiveProfile(event.profile) }
         scope.launch { alertOnDisconnect() }
+        scope.launch { alertOnLowBattery() }
         scope.launch { keepBluetoothOn() }
     }
 
@@ -122,9 +124,49 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.1") {
         }
     }
 
+    /**
+     * The battery barely moves during a ride, so it need not take a field: warn once per connection when it
+     * is at or below [BATTERY_LOW_PERCENT], and once more if it then reaches [BATTERY_VERY_LOW_PERCENT].
+     * A connection normally lasts the ride (the gearbox has to be paired again after a drop), so this is in
+     * effect a warning at the start of the ride and one when it gets critical. Works whether or not the
+     * battery field is on a page.
+     */
+    private suspend fun alertOnLowBattery() {
+        var warned = 0 // 0 nothing yet, 1 low, 2 very low
+        client.state.collect { state ->
+            if (state.link != PinionLink.CONNECTED) {
+                warned = 0
+                return@collect
+            }
+            val percent = state.batteryPercent ?: return@collect
+            val level = when {
+                percent <= BATTERY_VERY_LOW_PERCENT -> 2
+                percent <= BATTERY_LOW_PERCENT -> 1
+                else -> 0
+            }
+            if (level <= warned) return@collect
+            warned = level
+            val shown = percent.roundToInt()
+            Timber.i("Battery ${"%.2f".format(percent)} %, low battery alert (level $level)")
+            karooSystem.dispatch(
+                InRideAlert(
+                    id = "pinion-battery-low",
+                    icon = R.drawable.ic_pinion,
+                    title = getString(if (level == 2) R.string.alert_battery_very_low_title else R.string.alert_battery_low_title),
+                    detail = getString(R.string.alert_battery_low_detail, shown),
+                    autoDismissMs = 10_000,
+                    backgroundColor = R.color.alert_background,
+                    textColor = R.color.alert_text,
+                ),
+            )
+        }
+    }
+
     companion object {
         /** Must match `id` in res/xml/extension_info.xml */
         const val EXTENSION_ID = "pinion"
         private const val BLUETOOTH_REQUEST_INTERVAL_MS = 15_000L
+        const val BATTERY_LOW_PERCENT = 20.0
+        const val BATTERY_VERY_LOW_PERCENT = 10.0
     }
 }
