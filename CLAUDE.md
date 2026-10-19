@@ -92,6 +92,14 @@ than the previous one; and about half a minute after stopping the count resets, 
 (0 revolutions, time 0xFFFF), so a later session starts counting from 1 again. A consumer that treats the count as
 monotonic would see a backwards jump there.
 
+Pinion Workshop Manual 2024 ("Classic", 136 pp., supplied by the author; not in the repo), Smart.Shift parts
+pp. 63-66 and 125-127: pairing is a 3-10 s hold of the bottom shift lever, a sound on release, LED flashing blue,
+which agrees with the above. Calibration is both buttons 5-10 s, release, both again within 3 s (LED yellow, then
+green). A new box needs its B2B settings (mounting angle, sprockets, wheel size, power supply) entered in Pinion's
+app before calibrating; the app can archive them from the old box and load them into a replacement. Error codes
+are only described for CAN (e-bike display); below 6 V supply shifting is impaired (code 8C-02). Nothing on
+Bluetooth, the idle timeout or the BLE protocol.
+
 ## BLE protocol
 
 Source: Tim Angus's reverse engineering, <https://github.com/timangus/garmin-connectiq-pinion-barrel>
