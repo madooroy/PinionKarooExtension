@@ -133,13 +133,14 @@ Open questions to settle on the real hardware:
   (seen 2026-10-11 20:02, right after a reinstall; cause not established).
 - Scanning uses `SCAN_MODE_LOW_LATENCY` for as long as the gearbox is not found, which on a ride after a dropped
   link is the rest of the ride. Drop to a low-power scan after the first couple of minutes.
-- Version 0.1.2 (in progress, low-battery alert): versionCode 3. Not yet tried on the Karoo: check with the fake gearbox (`15 b` then reconnect, then `8 b` and wait up to 5 minutes for the battery read). The version name is also passed to `KarooExtension` in
+- Version 0.1.2 (in progress, low-battery alert): versionCode 3. Logic in `LowBatteryWarning.kt`, covered by `LowBatteryWarningTest`. Not yet seen on the Karoo: the fake gearbox's Pi is in other use, so check against the real gearbox with a local, uncommitted `LowBatteryWarning(low = 95.0)` in the service (the alert should show on connecting). The version name is also passed to `KarooExtension` in
   `PinionExtensionService`; keep the two in step. Release APKs are signed with the debug key of the author's
   laptop, so they must be built there for an update over an earlier install to work.
 
 ## Layout
 
 - `PinionProtocol.kt`: UUIDs, request encoding, reply decoding. Pure Kotlin, covered by `PinionProtocolTest`.
+- `LowBatteryWarning.kt`: when to raise the low-battery alert. Pure Kotlin, covered by `LowBatteryWarningTest`.
 - `PinionBleClient.kt`: scan, connect, subscribe, poll the gear every 60 s and the battery every 5 minutes (the gear poll corrects a lost notification and logs "Gear poll"; any read also resets the gearbox's 8 minute idle switch-off; the status screen has a test button that switches the poll between gear + battery, gear only, battery only and off, kept in prefs), retry forever. Publishes `StateFlow<PinionState>`. Process-wide singleton. Runs only while the active ride profile contains a Pinion field (`ActiveRideProfile` event, handled in the service) or the status activity is open, and for 2 minutes after. Field streams are no use for this: Karoo keeps them running whatever profile is open.
 - `extension/PinionExtensionService.kt`: the `KarooExtension` service; owns the client's lifetime, requests the BT radio from Karoo, raises an in-ride alert on disconnect, and a low-battery alert once per connection at 20 % or less and again at 10 % or less (so the battery field can be left off a crowded page: the map page takes only four fields, 2x2, and they cannot be made half width).
 - `extension/PinionDataType.kt`: one class for both fields; it only streams a value, Karoo draws the field.
