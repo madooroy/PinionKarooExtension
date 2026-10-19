@@ -21,8 +21,7 @@ Smart.Shift (Priority Gemini), bike stationary.
   in the log under tag `antradio`), from 19:30 a Coros heart rate sensor over BLE, and from about 19:37 Favero
   Assioma Pro MX pedals over ANT+; no effect on the link.
 - The gearbox does not go to sleep while connected: no shift or crank movement from 18:08:30 to about
-  19:37 and it answered every poll. The author believes it normally switches off after some minutes idle, but the
-  time is not in the manual.
+  19:37 and it answered every poll. (The Smart.Shift user manual gives the idle time, see below.)
 - **It is the 60 s reads that keep it awake, and its idle timeout is 8 minutes.** With the poll set to off
   (status screen button) and the bike untouched: connected 20:16:14, last read 20:16:16.7, link lost at
   20:24:20.7 with GATT status 8 (supervision timeout: the gearbox goes silent, it does not send a disconnect).
@@ -100,6 +99,25 @@ app before calibrating; the app can archive them from the old box and load them 
 are only described for CAN (e-bike display); below 6 V supply shifting is impaired (code 8C-02). Nothing on
 Bluetooth, the idle timeout or the BLE protocol.
 
+Pinion Smart.Shift user manual for standard (non-e-) bikes (multilingual, English pp. 25-46; supplied by the
+author as a browser printout without a text layer; not in the repo):
+- p. 38: Smart.Shift sleeps while on battery power and wakes on the first shift; "once eight minutes have passed
+  without any shifting, the sleep mode is activated". Matches the 480 s measured above (reads and crank turns also
+  reset the timer, which the manual does not say).
+- p. 40: after power-on and one shift to wake it, it is in pairing mode for 2 minutes; after that, a 3 s hold of the
+  rear trigger button (without the Pinion logo) starts 2 minutes more, LED flashing blue. Whether "activation"
+  includes waking from sleep is not said: if it does, the gearbox would advertise again after its 8 minute sleep at
+  the first shift, which is the open question below. p. 42: reversing the trigger mapping does not move the
+  Bluetooth button.
+- p. 33: battery good for over 20,000 shifts and 100 hours of riding. When low, the box LED flashes after each shift,
+  yellow at 20 % or less, red at 10 % or less, and at 5 % or less it also beeps; low charge can reduce shifting
+  performance. The low-battery alert uses the same 20 % and 10 % levels.
+- p. 43, LED: green OK, yellow non-critical error, red critical error, white manual shift (during shifts), light blue
+  PRE.SELECT active (during shifts), dark blue pairing; health status shown for 3 s on start or wake-up.
+- p. 36: a beep when the lowest or highest gear is already engaged; shifts are made with the cranks vertical, at low
+  cadence immediately. START.SELECT and PRE.SELECT need the optional speed sensor.
+- p. 45: firmware updates and error messages are in the app ("Notifications").
+
 ## BLE protocol
 
 Source: Tim Angus's reverse engineering, <https://github.com/timangus/garmin-connectiq-pinion-barrel>
@@ -129,7 +147,8 @@ Open questions to settle on the real hardware:
   leave the bike untouched 12 minutes (the idle timeout is 8); if still connected, switch to "gear only" for
   another 12. Set it back to "gear + battery" afterwards.
 - Does the gearbox advertise again when it wakes from its 8 minute sleep (shift or crank turn), and does the Karoo
-  then reconnect from the ride page by itself? The code keeps scanning from the ride page, so it should. If so, the
+  then reconnect from the ride page by itself? The user manual (p. 40) hints yes: 2 minutes of pairing mode after
+  activation. The code keeps scanning from the ride page, so it should. If so, the
   disconnect alert's "hold the rear shift button" wording may need changing.
 - Whether anything differs outdoors (it held 122 minutes stationary and an hour on rollers).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
