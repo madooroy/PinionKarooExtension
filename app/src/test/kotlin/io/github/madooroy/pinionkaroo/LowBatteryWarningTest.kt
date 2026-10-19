@@ -26,6 +26,9 @@ class LowBatteryWarningTest {
         assertNull(w.update(connected(19.9)))
         assertEquals(Level.VERY_LOW, w.update(connected(10.0)))
         assertNull(w.update(connected(9.0)))
+        assertNull(w.update(connected(5.01)))
+        assertEquals(Level.CRITICAL, w.update(connected(5.0)))
+        assertNull(w.update(connected(4.0)))
     }
 
     @Test
@@ -33,6 +36,14 @@ class LowBatteryWarningTest {
         val w = LowBatteryWarning()
         assertEquals(Level.VERY_LOW, w.update(connected(8.0)))
         assertNull(w.update(connected(7.0)))
+    }
+
+    @Test
+    fun criticalAtConnectionSkipsTheOthers() {
+        val w = LowBatteryWarning()
+        assertEquals(Level.CRITICAL, w.update(connected(3.0)))
+        assertNull(w.update(connected(8.0)))
+        assertNull(w.update(connected(15.0)))
     }
 
     @Test

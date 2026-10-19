@@ -111,7 +111,7 @@ author as a browser printout without a text layer; not in the repo):
   Bluetooth button.
 - p. 33: battery good for over 20,000 shifts and 100 hours of riding. When low, the box LED flashes after each shift,
   yellow at 20 % or less, red at 10 % or less, and at 5 % or less it also beeps; low charge can reduce shifting
-  performance. The low-battery alert uses the same 20 % and 10 % levels.
+  performance. The low-battery alert uses the same 20 %, 10 % and 5 % levels.
 - p. 43, LED: green OK, yellow non-critical error, red critical error, white manual shift (during shifts), light blue
   PRE.SELECT active (during shifts), dark blue pairing; health status shown for 3 s on start or wake-up.
 - p. 36: a beep when the lowest or highest gear is already engaged; shifts are made with the cranks vertical, at low
@@ -169,7 +169,7 @@ Open questions to settle on the real hardware:
 - `PinionProtocol.kt`: UUIDs, request encoding, reply decoding. Pure Kotlin, covered by `PinionProtocolTest`.
 - `LowBatteryWarning.kt`: when to raise the low-battery alert. Pure Kotlin, covered by `LowBatteryWarningTest`.
 - `PinionBleClient.kt`: scan, connect, subscribe, poll the gear every 60 s and the battery every 5 minutes (the gear poll corrects a lost notification and logs "Gear poll"; any read also resets the gearbox's 8 minute idle switch-off; the status screen has a test button that switches the poll between gear + battery, gear only, battery only and off, kept in prefs), retry forever. Publishes `StateFlow<PinionState>`. Process-wide singleton. Runs only while the active ride profile contains a Pinion field (`ActiveRideProfile` event, handled in the service) or the status activity is open, and for 2 minutes after. Field streams are no use for this: Karoo keeps them running whatever profile is open.
-- `extension/PinionExtensionService.kt`: the `KarooExtension` service; owns the client's lifetime, requests the BT radio from Karoo, raises an in-ride alert on disconnect, and a low-battery alert once per connection at 20 % or less and again at 10 % or less (so the battery field can be left off a crowded page: the map page takes only four fields, 2x2, and they cannot be made half width).
+- `extension/PinionExtensionService.kt`: the `KarooExtension` service; owns the client's lifetime, requests the BT radio from Karoo, raises an in-ride alert on disconnect, and a low-battery alert once per connection at 20 % or less and again at 10 % and at 5 % or less (so the battery field can be left off a crowded page: the map page takes only four fields, 2x2, and they cannot be made half width).
 - `extension/PinionDataType.kt`: one class for both fields; it only streams a value, Karoo draws the field.
 - `MainActivity.kt`: requests Bluetooth/location runtime permissions, shows live status, "Forget gearbox".
 - `res/xml/extension_info.xml`: extension id `pinion`, type ids `gear` and `battery`. These must match the Kotlin constants.

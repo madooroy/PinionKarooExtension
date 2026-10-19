@@ -127,9 +127,9 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.2") {
 
     /**
      * The battery barely moves during a ride, so it need not take a field: [LowBatteryWarning] decides when to
-     * warn (once per connection at 20 % or less, once more at 10 % or less). A connection normally lasts the
-     * ride, so in effect this is a warning at the start and one when it gets critical. Works whether or not
-     * the battery field is on a page.
+     * warn (once per connection at 20 % or less, once more at 10 % and at 5 % or less). A connection normally
+     * lasts the ride, so in effect this is a warning at the start and more as it gets critical. Works whether or
+     * not the battery field is on a page.
      */
     private suspend fun alertOnLowBattery() {
         val warning = LowBatteryWarning()
@@ -142,10 +142,17 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.2") {
                     id = "pinion-battery-low",
                     icon = R.drawable.ic_pinion,
                     title = getString(
-                        if (level == LowBatteryWarning.Level.VERY_LOW) R.string.alert_battery_very_low_title
-                        else R.string.alert_battery_low_title,
+                        when (level) {
+                            LowBatteryWarning.Level.LOW -> R.string.alert_battery_low_title
+                            LowBatteryWarning.Level.VERY_LOW -> R.string.alert_battery_very_low_title
+                            LowBatteryWarning.Level.CRITICAL -> R.string.alert_battery_critical_title
+                        },
                     ),
-                    detail = getString(R.string.alert_battery_low_detail, percent.roundToInt()),
+                    detail = getString(
+                        if (level == LowBatteryWarning.Level.CRITICAL) R.string.alert_battery_critical_detail
+                        else R.string.alert_battery_low_detail,
+                        percent.roundToInt(),
+                    ),
                     autoDismissMs = 10_000,
                     backgroundColor = R.color.alert_background,
                     textColor = R.color.alert_text,
