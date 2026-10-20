@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.math.roundToInt
 
 /**
  * Entry point bound by the Karoo system (see AndroidManifest.xml and res/xml/extension_info.xml).
@@ -173,7 +172,8 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.2") {
                     detail = getString(
                         if (level == LowBatteryWarning.Level.CRITICAL) R.string.alert_battery_critical_detail
                         else R.string.alert_battery_low_detail,
-                        percent.roundToInt(),
+                        // Cut off like Karoo's own battery field (86.54 shows as 86 there), not rounded
+                        percent.toInt(),
                     ),
                     autoDismissMs = 10_000,
                     backgroundColor = R.color.alert_background,

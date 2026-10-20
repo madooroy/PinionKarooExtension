@@ -13,9 +13,9 @@
 
     <string name="alert_battery_low_title">Pinion battery low</string>
     <string name="alert_battery_very_low_title">Pinion battery very low</string>
-    <string name="alert_battery_low_detail">%1$d%% left. Charge the Smart.Shift battery soon.</string>
+    <string name="alert_battery_low_detail">%1$d%% left. Charge it soon.</string>
     <string name="alert_battery_critical_title">Pinion battery critical</string>
-    <string name="alert_battery_critical_detail">%1$d%% left. Shifting may get worse. Charge the Smart.Shift battery now.</string>
+    <string name="alert_battery_critical_detail">%1$d%% left. Charge it now.</string>
 
     <string name="main_forget">Forget gearbox</string>
     <string name="forget_title">Forget gearbox?</string>

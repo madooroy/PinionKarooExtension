@@ -201,7 +201,9 @@ Karoo facts that shaped the code (the layout ones found on a Karoo 2, 2026-10-07
   any error (2026-10-20: the gearbox connected on the home screen, the alert went out at once and never showed;
   the ride screen, and with it the field streams, started 12 s later). The `ActiveRideProfile` event already
   comes while the rider scrolls through profiles on the home screen. So the low-battery alert waits until a
-  Pinion field stream is running. No "Stop ... stream" has been seen in the logs yet, so whether Karoo stops the
+  Pinion field stream is running. Checked 2026-10-20 with a temporary 95 % threshold: shown on the ride screen. An alert's detail
+  shows about two lines ("87% left. Charge the Smart.Shift b..." was cut), and Karoo's numeric field cuts the
+  value off rather than rounding (86.54 shows as 86), so the alert does the same. No "Stop ... stream" has been seen in the logs yet, so whether Karoo stops the
   streams when the ride screen is closed is unknown.
 - Screenshots for checking layout: `adb exec-out screencap -p > shot.png`.
 
