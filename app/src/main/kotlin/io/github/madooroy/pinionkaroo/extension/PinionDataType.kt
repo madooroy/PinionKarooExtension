@@ -29,10 +29,14 @@ class PinionDataType(
     extension: String,
     typeId: String,
     private val value: (PinionState) -> Double?,
+    /** Told when Karoo starts and stops asking for this field: the ride screen is open while any stream runs. */
+    private val onStreamStarted: () -> Unit = {},
+    private val onStreamStopped: () -> Unit = {},
 ) : DataTypeImpl(extension, typeId) {
 
     override fun startStream(emitter: Emitter<StreamState>) {
         Timber.d("Start $typeId stream")
+        onStreamStarted()
         val job = CoroutineScope(Dispatchers.IO).launch {
             client.state
                 .map { it.toStreamState() }
@@ -42,6 +46,7 @@ class PinionDataType(
         emitter.setCancellable {
             Timber.d("Stop $typeId stream")
             job.cancel()
+            onStreamStopped()
         }
     }
 

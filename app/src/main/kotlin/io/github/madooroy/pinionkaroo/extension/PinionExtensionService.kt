@@ -17,9 +17,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.math.roundToInt
@@ -37,13 +40,28 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.2") {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var holdsClient = false
 
+    /**
+     * Pinion field streams Karoo is running. Karoo starts them when the ride screen opens, and only shows an
+     * InRideAlert while the ride screen is open: one sent before that (seen 2026-10-20: the gearbox connected
+     * on the home screen, 12 s before the ride screen) is lost.
+     */
+    private val activeStreams = MutableStateFlow(0)
+
     override val types by lazy {
         listOf(
             // Limits: only a gear within 1..gearCount (at most 12) is ever shown
-            PinionDataType(client, extension, PinionDataType.GEAR) { state ->
-                state.gear?.takeIf { it in 1..state.gearCount }?.toDouble()
-            },
-            PinionDataType(client, extension, PinionDataType.BATTERY) { state -> state.batteryPercent },
+            PinionDataType(
+                client, extension, PinionDataType.GEAR,
+                value = { state -> state.gear?.takeIf { it in 1..state.gearCount }?.toDouble() },
+                onStreamStarted = { activeStreams.update { it + 1 } },
+                onStreamStopped = { activeStreams.update { it - 1 } },
+            ),
+            PinionDataType(
+                client, extension, PinionDataType.BATTERY,
+                value = { state -> state.batteryPercent },
+                onStreamStarted = { activeStreams.update { it + 1 } },
+                onStreamStopped = { activeStreams.update { it - 1 } },
+            ),
         )
     }
 
@@ -129,11 +147,15 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.2") {
      * The battery barely moves during a ride, so it need not take a field: [LowBatteryWarning] decides when to
      * warn (once per connection at 20 % or less, once more at 10 % and at 5 % or less). A connection normally
      * lasts the ride, so in effect this is a warning at the start and more as it gets critical. Works whether or
-     * not the battery field is on a page.
+     * not the battery field is on a page. Waits for the ride screen, see [activeStreams].
      */
     private suspend fun alertOnLowBattery() {
         val warning = LowBatteryWarning()
-        client.state.collect { state ->
+        val rideScreenOpen = activeStreams.map { it > 0 }.distinctUntilChanged()
+        combine(client.state, rideScreenOpen) { state, open -> state to open }.collect { (state, open) ->
+            // Hold a warning back until the ride screen is open, or Karoo drops it. A disconnect still goes
+            // through, so that the next connection starts afresh.
+            if (state.link == PinionLink.CONNECTED && !open) return@collect
             val level = warning.update(state) ?: return@collect
             val percent = state.batteryPercent ?: return@collect
             Timber.i("Battery ${"%.2f".format(percent)} %, low battery alert ($level)")

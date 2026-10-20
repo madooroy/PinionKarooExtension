@@ -197,6 +197,12 @@ Karoo facts that shaped the code (the layout ones found on a Karoo 2, 2026-10-07
   (`SensorServiceModel(... bluetoothEnabled=false ...)` in the log) while the extension was installed and the
   status screen open, and a running scan then reports nothing and no error. The scan now watches
   `adapter.isEnabled`, and the service repeats `RequestBluetooth` while the client reports BLUETOOTH_OFF.
+- An `InRideAlert` is only shown while the ride screen is open; one dispatched before that is dropped without
+  any error (2026-10-20: the gearbox connected on the home screen, the alert went out at once and never showed;
+  the ride screen, and with it the field streams, started 12 s later). The `ActiveRideProfile` event already
+  comes while the rider scrolls through profiles on the home screen. So the low-battery alert waits until a
+  Pinion field stream is running. No "Stop ... stream" has been seen in the logs yet, so whether Karoo stops the
+  streams when the ride screen is closed is unknown.
 - Screenshots for checking layout: `adb exec-out screencap -p > shot.png`.
 
 ## Build and install
