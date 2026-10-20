@@ -160,7 +160,7 @@ Open questions to settle on the real hardware:
   (seen 2026-10-11 20:02, right after a reinstall; cause not established).
 - Scanning uses `SCAN_MODE_LOW_LATENCY` for as long as the gearbox is not found, which on a ride after a dropped
   link is the rest of the ride. Drop to a low-power scan after the first couple of minutes.
-- Version 0.1.2 (in progress, low-battery alert): versionCode 3. Logic in `LowBatteryWarning.kt`, covered by `LowBatteryWarningTest`. Not yet seen on the Karoo: the fake gearbox's Pi is in other use, so check against the real gearbox with a local, uncommitted `LowBatteryWarning(low = 95.0)` in the service (the alert should show on connecting). The version name is also passed to `KarooExtension` in
+- Version 0.1.2 released 2026-10-20 (tag v0.1.2 at 611d529, low-battery alert): versionCode 3. Next release: versionCode 4. The version name is also passed to `KarooExtension` in
   `PinionExtensionService`; keep the two in step. Release APKs are signed with the debug key of the author's
   laptop, so they must be built there for an update over an earlier install to work.
 
