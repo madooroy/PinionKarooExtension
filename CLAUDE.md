@@ -171,6 +171,10 @@ Open questions to settle on the real hardware:
   points Karoo at `releases/latest/download/manifest.json` (meta-data `io.hammerhead.karooext.MANIFEST_URL`), so the
   release must be marked Latest. Releasing from this cloud session is blocked (GitHub API refuses releases and tag
   pushes), so the author creates it on the website.
+- Ideas, not planned: a "Pinion Cadence" field from the gearbox's CSC Measurement over the existing link (no
+  second connection needed; mind the count reset quirk above), for riders without a cadence sensor. Pairing the
+  gearbox as a Karoo cadence sensor instead is untested, and would take the gearbox's single connection away from
+  the extension (and its CSC claims a wheel speed that is always 0).
 - Karoo 3 can install from a phone (Companion app, share a GitHub APK link; Hammerhead says "New Karoo only", so
   not the Karoo 2) and then offers updates from the manifest. Untested by the author.
 
