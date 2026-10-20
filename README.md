@@ -62,8 +62,24 @@ The Karoo 3 is supported in the code (Android 13 permissions) but untested.
 
 ## Install
 
+### Karoo 3: from your phone
+
+Hammerhead lets the current Karoo install apps shared from the Hammerhead Companion app
+([Hammerhead's instructions](https://support.hammerhead.io/hc/en-us/articles/31576497036827-Companion-App-Sideloading);
+Karoo software 1.538.2049 or later, Karoo on Wi-Fi).
+
+1. On your phone, open the [latest release](https://github.com/madooroy/pinion-karoo-extension/releases/latest).
+2. Long-press `pinion-karoo-extension-<version>.apk`, choose **Share** and pick the **Hammerhead** Companion app.
+3. Tap **Install** on the Karoo.
+4. Carry on at step 4 below.
+
+From version 0.1.3 the Karoo also offers updates itself, on the app's details page.
+Not yet tried by the author, who rides a Karoo 2: please open an issue to say whether it worked.
+
+### Karoo 2 (or any Karoo): with a computer
+
 1. **Download the app.** Get `pinion-karoo-extension-<version>.apk` from the
-   [latest release](https://github.com/madooroy/pinion-karoo-extension/releases).
+   [latest release](https://github.com/madooroy/pinion-karoo-extension/releases/latest).
 
 2. **Switch on USB debugging on the Karoo:** *Settings > About*, tap *Build number* until developer mode
    is on, then *Settings > Developer options > USB debugging*. Connect the Karoo to a computer by USB
@@ -79,7 +95,7 @@ The Karoo 3 is supported in the code (Android 13 permissions) but untested.
 4. **Open *Pinion Smart.Shift* on the Karoo once** and allow the permission it asks for.
 
 5. **Add the fields.** Edit a ride profile on the Karoo, add a data field and pick **Pinion Gear** (and
-   **Pinion Battery**) from the *Pinion Smart.Shift* section.
+   **Pinion Battery**, if you want it) from the *Pinion Smart.Shift* section.
 
 ### Building it yourself
 

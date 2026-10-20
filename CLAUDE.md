@@ -160,9 +160,19 @@ Open questions to settle on the real hardware:
   (seen 2026-10-11 20:02, right after a reinstall; cause not established).
 - Scanning uses `SCAN_MODE_LOW_LATENCY` for as long as the gearbox is not found, which on a ride after a dropped
   link is the rest of the ride. Drop to a low-power scan after the first couple of minutes.
-- Version 0.1.2 released 2026-10-20 (tag v0.1.2 at 611d529, low-battery alert): versionCode 3. Next release: versionCode 4. The version name is also passed to `KarooExtension` in
-  `PinionExtensionService`; keep the two in step. Release APKs are signed with the debug key of the author's
-  laptop, so they must be built there for an update over an earlier install to work.
+- Version 0.1.3 (in progress: update manifest): versionCode 4. The version is in three places, `versionName`/
+  `versionCode` in `app/build.gradle.kts`, the `KarooExtension` constructor in `PinionExtensionService`, and
+  `app/manifest.json`; `ReleaseVersionTest` fails unless they agree (and unless `latestApkUrl` names the release's
+  APK). Release APKs are signed with the debug key of the author's laptop, so they must be built there for an
+  update over an earlier install to work.
+- **Release steps:** bump the version in all three places (also `releaseNotes` in `app/manifest.json`), run
+  `testDebugUnitTest assembleRelease`, then a GitHub release tagged `v<version>` with two assets:
+  `pinion-karoo-extension-<version>.apk` (the release APK renamed) and `manifest.json` (copied from `app/`). The app
+  points Karoo at `releases/latest/download/manifest.json` (meta-data `io.hammerhead.karooext.MANIFEST_URL`), so the
+  release must be marked Latest. Releasing from this cloud session is blocked (GitHub API refuses releases and tag
+  pushes), so the author creates it on the website.
+- Karoo 3 can install from a phone (Companion app, share a GitHub APK link; Hammerhead says "New Karoo only", so
+  not the Karoo 2) and then offers updates from the manifest. Untested by the author.
 
 ## Layout
 

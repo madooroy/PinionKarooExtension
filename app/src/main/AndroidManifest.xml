@@ -50,6 +50,12 @@
                 android:name="io.hammerhead.karooext.EXTENSION_INFO"
                 android:resource="@xml/extension_info" />
         </service>
+
+        <!-- Lets Karoo show this app's details and offer updates (karoo-ext 1.1.1+). The file is attached to every
+             GitHub release; app/manifest.json is its source. -->
+        <meta-data
+            android:name="io.hammerhead.karooext.MANIFEST_URL"
+            android:value="https://github.com/madooroy/pinion-karoo-extension/releases/latest/download/manifest.json" />
     </application>
 
 </manifest>
