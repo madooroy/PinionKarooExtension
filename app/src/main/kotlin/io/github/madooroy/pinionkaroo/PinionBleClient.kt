@@ -211,9 +211,24 @@ class PinionBleClient private constructor(private val context: Context) {
             ScanFilter.Builder().setServiceUuid(ParcelUuid(PinionProtocol.SERVICE_UUID)).build()
         }
         Timber.i(if (address != null) "Scanning for saved gearbox $address" else "Scanning for any Pinion gearbox")
+        // Scan flat out at first: the rider has usually just put the gearbox in pairing mode, which lasts two
+        // minutes. After that the gearbox is most likely not advertising at all (it stops after a link it loses,
+        // and a rider may ride on without reconnecting), so drop to a low-power scan instead of draining the
+        // Karoo for the rest of the ride. The gearbox advertises every 25-60 ms, so a low-power scan (Android:
+        // listening about 0.5 s in every 5 s) still finds it within seconds once the rider holds the button.
+        val started = SystemClock.elapsedRealtime()
+        var lowPower = false
         while (true) {
-            // Android silently demotes scans that run longer than 30 minutes, so restart periodically
-            val device = withTimeoutOrNull(SCAN_RESTART_MS) {
+            val elapsed = SystemClock.elapsedRealtime() - started
+            if (!lowPower && elapsed >= FAST_SCAN_MS) {
+                lowPower = true
+                Timber.i("Not found in ${FAST_SCAN_MS / 1000} s, scanning in low-power mode")
+            }
+            val scanMode = if (lowPower) ScanSettings.SCAN_MODE_LOW_POWER else ScanSettings.SCAN_MODE_LOW_LATENCY
+            // Android silently demotes scans that run longer than 30 minutes, so restart periodically; the fast
+            // phase ends with a restart in the low-power mode
+            val timeout = if (lowPower) SCAN_RESTART_MS else FAST_SCAN_MS - elapsed
+            val device = withTimeoutOrNull(timeout) {
                 coroutineScope {
                     // Karoo switches the radio off by itself when it thinks nothing needs it, and a scan
                     // then just never reports anything: notice, so the status does not stay on SEARCHING
@@ -224,18 +239,18 @@ class PinionBleClient private constructor(private val context: Context) {
                         }
                     }
                     try {
-                        scanOnce(adapter, filter)
+                        scanOnce(adapter, filter, scanMode)
                     } finally {
                         watchdog.cancel()
                     }
                 }
             }
             if (device != null) return device
-            Timber.d("Still scanning...")
+            if (lowPower) Timber.d("Still scanning...")
         }
     }
 
-    private suspend fun scanOnce(adapter: BluetoothAdapter, filter: ScanFilter): BluetoothDevice =
+    private suspend fun scanOnce(adapter: BluetoothAdapter, filter: ScanFilter, scanMode: Int): BluetoothDevice =
         suspendCancellableCoroutine { cont ->
             val scanner = adapter.bluetoothLeScanner
             if (scanner == null) {
@@ -258,8 +273,7 @@ class PinionBleClient private constructor(private val context: Context) {
                     }
                 }
             }
-            // The advertising window after the button hold is short, so scan continuously
-            val settings = ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build()
+            val settings = ScanSettings.Builder().setScanMode(scanMode).build()
             scanner.startScan(listOf(filter), settings, callback)
             cont.invokeOnCancellation { runCatching { scanner.stopScan(callback) } }
         }
@@ -494,6 +508,9 @@ class PinionBleClient private constructor(private val context: Context) {
         private const val RETRY_DELAY_MS = 1_000L
         private const val STOP_LINGER_MS = 120_000L
         private const val SCAN_RESTART_MS = 10 * 60_000L
+
+        /** How long to scan flat out before dropping to a low-power scan: the gearbox's pairing window. */
+        private const val FAST_SCAN_MS = 2 * 60_000L
         private const val CONNECT_TIMEOUT_MS = 10_000L
         private const val GATT_TIMEOUT_MS = 5_000L
         private const val POLL_MS = 60_000L

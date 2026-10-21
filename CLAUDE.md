@@ -161,8 +161,10 @@ Open questions to settle on the real hardware:
 
 - After the extension itself closes the link (no users for 2 minutes), the ride field kept showing the last gear
   (seen 2026-10-11 20:02, right after a reinstall; cause not established).
-- Scanning uses `SCAN_MODE_LOW_LATENCY` for as long as the gearbox is not found, which on a ride after a dropped
-  link is the rest of the ride. Drop to a low-power scan after the first couple of minutes.
+- Scanning: `SCAN_MODE_LOW_LATENCY` for the first 2 minutes of a search (the pairing window), then
+  `SCAN_MODE_LOW_POWER` (logged "scanning in low-power mode"), so a rider who rides on after a dropped link does not
+  drain the Karoo. Each new search (after a failed or ended connection) starts fast again. Not yet checked on the
+  Karoo: that a 3 s hold during the low-power phase is still picked up within seconds.
 - Version 0.1.3 (in progress: update manifest): versionCode 4. The version is in three places, `versionName`/
   `versionCode` in `app/build.gradle.kts`, the `KarooExtension` constructor in `PinionExtensionService`, and
   `app/manifest.json`; `ReleaseVersionTest` fails unless they agree (and unless `latestApkUrl` names the release's

@@ -6,7 +6,7 @@
   "latestVersionCode": 4,
   "developer": "madooroy",
   "description": "Shows the current gear and battery level of a Pinion Smart.Shift gearbox as Karoo data fields, with a low-battery alert at 20, 10 and 5 %. Unofficial: not affiliated with Pinion or Hammerhead. Built on Tim Angus's reverse engineering of the Smart.Shift Bluetooth protocol.",
-  "releaseNotes": "Karoo can now show this extension's details and offer updates.",
+  "releaseNotes": "Karoo can now show this extension's details and offer updates. Uses less Karoo battery while the gearbox cannot be found: after 2 minutes the search drops to a low-power mode.",
   "screenshotUrls": ["https://raw.githubusercontent.com/madooroy/pinion-karoo-extension/main/docs/fields.png"],
   "tags": ["performance"]
 }
