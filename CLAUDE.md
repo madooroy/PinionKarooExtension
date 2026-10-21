@@ -31,8 +31,12 @@ Smart.Shift (Priority Gemini), bike stationary.
   timeout does not depend on the central, and the gearbox sends nothing on any subscribed characteristic (`01`, `03`,
   `05`, `07`, CSC) before it goes silent.
   So an open link alone does not keep the gearbox awake, and without the poll a rider who does not shift for
-  8 minutes loses the connection and has to put the gearbox in pairing mode again. Keep the poll on. Not tested:
-  whether the gear read or the battery read alone is enough.
+  8 minutes loses the connection and has to put the gearbox in pairing mode again. Keep the poll on.
+  **A battery read alone is enough** (2026-10-21, `pinion-2026-10-21.log`): poll set to battery only, connected
+  05:57:27, one battery read every 60 s and nothing else (no shift, no crank turn, Karoo screen saver on, Karoo on
+  USB), still connected and answering at 06:10:28, 13 minutes on. So any read resets the idle timer, and Tim Angus's
+  data field, which reads the battery every 60 s, keeps the gearbox awake too: its 90 s drops have another cause.
+  Gear only not tested (expected the same).
 - **After a clean disconnect the gearbox advertises again** (2026-10-14): connected about 22:36 after a power-on,
   FORGET GEARBOX at about 22:41 (GATT closed by the Karoo, well after the 2 minute pairing window), and the Karoo
   found it and reconnected straight away, without a button hold. An iPhone with nRF Connect saw the same on
@@ -143,9 +147,6 @@ Source: Tim Angus's reverse engineering, <https://github.com/timangus/garmin-con
   the client just scans until that happens and the field shows "Hold shift 3s".
 
 Open questions to settle on the real hardware:
-- Whether one read alone keeps the gearbox awake. Test: connect, set the status screen button to "battery only",
-  leave the bike untouched 12 minutes (the idle timeout is 8); if still connected, switch to "gear only" for
-  another 12. Set it back to "gear + battery" afterwards.
 - Does the gearbox advertise again when it wakes from its 8 minute sleep (shift or crank turn), and does the Karoo
   then reconnect from the ride page by itself? The user manual (p. 40) hints yes: 2 minutes of pairing mode after
   activation. The code keeps scanning from the ride page, so it should. If so, the
