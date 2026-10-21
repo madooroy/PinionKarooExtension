@@ -36,7 +36,8 @@ Smart.Shift (Priority Gemini), bike stationary.
   05:57:27, one battery read every 60 s and nothing else (no shift, no crank turn, Karoo screen saver on, Karoo on
   USB), still connected and answering at 06:10:28, 13 minutes on. So any read resets the idle timer, and Tim Angus's
   data field, which reads the battery every 60 s, keeps the gearbox awake too: its 90 s drops have another cause.
-  Gear only not tested (expected the same).
+  **A gear read alone is enough too** (same log): last shift 06:12:13, poll set to gear only at 06:12:55, one gear
+  read every 60 s and nothing else, still connected and answering at 06:24:30, 10 min 16 s after the last shift.
 - **After a clean disconnect the gearbox advertises again** (2026-10-14): connected about 22:36 after a power-on,
   FORGET GEARBOX at about 22:41 (GATT closed by the Karoo, well after the 2 minute pairing window), and the Karoo
   found it and reconnected straight away, without a button hold. An iPhone with nRF Connect saw the same on
