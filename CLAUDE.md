@@ -148,10 +148,11 @@ Source: Tim Angus's reverse engineering, <https://github.com/timangus/garmin-con
   the client just scans until that happens and the field shows "Hold shift 3s".
 
 Open questions to settle on the real hardware:
-- Does the gearbox advertise again when it wakes from its 8 minute sleep (shift or crank turn), and does the Karoo
-  then reconnect from the ride page by itself? The user manual (p. 40) hints yes: 2 minutes of pairing mode after
-  activation. The code keeps scanning from the ride page, so it should. If so, the
-  disconnect alert's "hold the rear shift button" wording may need changing.
+- Does the gearbox advertise again when it wakes from its 8 minute sleep? **First answer: no** (2026-10-21,
+  `pinion-2026-10-21.log`, the author's first gearbox): poll off after a read at 06:25:30, link lost 06:33:34 with
+  status 8 (8 min 4 s), Karoo scanning from 06:33:35 on the status screen; one shift (not a hold) about 06:35 woke
+  the gearbox but the Karoo did not find it in the next minute or two. So the disconnect alert's "hold the rear
+  shift button" wording stays. Repeat once on the replacement gearbox, ideally with nRF Connect scanning.
 - Whether anything differs outdoors (it held 122 minutes stationary and an hour on rollers).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap).
