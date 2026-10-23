@@ -192,7 +192,7 @@ Open questions to settle on the real hardware:
   rear 3 s") fitted without cutting and stayed up about 30 s.
 - Repository renamed 2026-10-23 to `madooroy/PinionKarooExtension` (GitHub redirects the old name); 0.1.3's
   manifest links use the new name. The APK keeps the file name `pinion-karoo-extension-<version>.apk`.
-- Version 0.1.3 (update manifest, low-power scan, disconnect wording; built and checked on the Karoo 2026-10-23, release pending): versionCode 4. The version is in three places, `versionName`/
+- Version 0.1.3 released 2026-10-23 (tag v0.1.3 at 7db8124; update manifest, low-power scan, disconnect wording), assets the APK and `manifest.json` (forgetting the manifest gives a 404 at `releases/latest/download/manifest.json`; check it after each release): versionCode 4. Next release: versionCode 5. The version is in three places, `versionName`/
   `versionCode` in `app/build.gradle.kts`, the `KarooExtension` constructor in `PinionExtensionService`, and
   `app/manifest.json`; `ReleaseVersionTest` fails unless they agree (and unless `latestApkUrl` names the release's
   APK). Release APKs are signed with the debug key of the author's laptop, so they must be built there for an
