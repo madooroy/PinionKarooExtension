@@ -149,7 +149,7 @@ Source: Tim Angus's reverse engineering, <https://github.com/timangus/garmin-con
 - **Advertising:** after power-on and after a 3 s hold of the rear shift button (2 minutes each), after a clean
   disconnect, and (replacement gearbox, 2026-10-23) after a shift wakes it from its 8 minute sleep. It is not
   bonding. Out of range it stops; the client just scans (fast for 2 minutes, then low power) and the fields show
-  Searching. The disconnect alert says "Shift once, or hold rear button 3 s".
+  Searching. The disconnect alert reads "Pinion offline / Shift once, or hold rear 3 s" for 30 s.
 
 Open questions to settle on the real hardware:
 - Does the gearbox advertise again when it wakes from its 8 minute sleep? **First answer: no** (2026-10-21,
@@ -161,8 +161,11 @@ Open questions to settle on the real hardware:
   shift 13:31:02, link lost 13:39:06 with status 8 (8 min 4 s); the rider shifted once (no hold) and the Karoo found
   the gearbox again at 13:39:52 and was connected at 13:39:53, gear 3 (the waking shift was carried out, gear 5 to
   3). So on this box waking it with a shift is enough; the first box's "no" may have been part of its pairing fault.
-  The disconnect alert now says "Shift once, or hold rear button 3 s" (0.1.3). Whether the alert shows while the
-  ride is paused (the pause screen was up at 13:39) is not known.
+  Repeated 13:44:12-13:52:16 with the ride running: drop at 8 min 4 s, the disconnect alert showed (title cut to
+  "PINION DISCONNEC...", detail to "Hold the rear / shift button for 3 ..."), one shift, back at 13:52:48, 32 s after
+  the drop. From 0.1.3 the alert reads "Pinion offline / Shift once, or hold rear 3 s" and stays 30 s instead of 10
+  (the rider nearly missed the 10 s one). A sticky alert (`autoDismissMs = null`) was considered and left out:
+  karoo-ext has no effect to take an alert down when the gearbox comes back, and it would cover the top of the page.
 - Whether anything differs outdoors (it held 122 minutes stationary and an hour on rollers).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap).

@@ -132,7 +132,9 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.3") {
                         icon = R.drawable.ic_pinion,
                         title = getString(R.string.alert_disconnected_title),
                         detail = getString(R.string.alert_disconnected_detail),
-                        autoDismissMs = 10_000,
+                        // Long enough not to be missed at a glance; not sticky, as there is no way to take an
+                        // alert down again when the gearbox comes back, and it covers the top of the ride page
+                        autoDismissMs = DISCONNECT_ALERT_MS,
                         backgroundColor = R.color.alert_background,
                         textColor = R.color.alert_text,
                     ),
@@ -187,5 +189,6 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.3") {
         /** Must match `id` in res/xml/extension_info.xml */
         const val EXTENSION_ID = "pinion"
         private const val BLUETOOTH_REQUEST_INTERVAL_MS = 15_000L
+        private const val DISCONNECT_ALERT_MS = 30_000L
     }
 }

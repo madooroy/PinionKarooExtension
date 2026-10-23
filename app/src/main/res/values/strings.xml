@@ -8,9 +8,10 @@
     <string name="battery">Pinion Battery</string>
     <string name="battery_description">Battery level of the Pinion Smart.Shift gearbox (%)</string>
 
-    <string name="alert_disconnected_title">Pinion disconnected</string>
-    <!-- The alert detail shows about two lines (some 35 characters on a Karoo 2) -->
-    <string name="alert_disconnected_detail">Shift once, or hold rear button 3 s</string>
+    <string name="alert_disconnected_title">Pinion offline</string>
+    <!-- On a Karoo 2 an alert title fits about 16 characters ("PINION DISCONNEC..." was cut) and the detail two
+         short lines of some 15 characters each ("Hold the rear / shift button for 3 ..." was cut) -->
+    <string name="alert_disconnected_detail">Shift once, or hold rear 3 s</string>
 
     <string name="alert_battery_low_title">Pinion battery low</string>
     <string name="alert_battery_very_low_title">Pinion battery very low</string>
