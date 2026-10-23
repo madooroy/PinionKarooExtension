@@ -71,6 +71,9 @@ Smart.Shift (Priority Gemini), bike stationary.
   and 5 minute battery reads, so Android does not hold back the timers while the Karoo sleeps. On waking the screen,
   gear and battery were showing while the speed sensor, heart rate strap and pedals had disconnected and came back
   after a few crank turns.
+- **Replacement gearbox, 2026-10-23** (`pinion-2026-10-23.log`, new BLE address): FORGET GEARBOX at 13:28:18, a 3 s
+  hold of the rear button, found and connected at 13:28:32 (14 s), saved; 12 gears, battery 87.90 %, shifts notified
+  as before. Pairing by the documented button hold works on this box.
 - Not yet checked on real hardware: an outdoor ride.
 
 Pairing mode, per Pinion's app FAQ
