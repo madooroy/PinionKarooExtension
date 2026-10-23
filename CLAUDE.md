@@ -239,6 +239,11 @@ Karoo facts that shaped the code (the layout ones found on a Karoo 2, 2026-10-07
   shows about two lines ("87% left. Charge the Smart.Shift b..." was cut), and Karoo's numeric field cuts the
   value off rather than rounding (86.54 shows as 86), so the alert does the same. No "Stop ... stream" has been seen in the logs yet, so whether Karoo stops the
   streams when the ride screen is closed is unknown.
+- **After a reinstall Karoo may not bind the extension again** (2026-10-23 14:00, second `adb install` of 0.1.3 in
+  five minutes): the process came back only for the status screen ("Process started" with no "Extension service
+  created" after it), so the status screen connected to the gearbox by itself while the ride page fields stayed on
+  Searching. The crash buffer held only Android Studio's own `installer` helper (SIGBUS), nothing from the extension.
+  A Karoo restart fixes it. The two clients cannot both hold the gearbox, which takes one connection.
 - Screenshots for checking layout: `adb exec-out screencap -p > shot.png`.
 
 ## Build and install

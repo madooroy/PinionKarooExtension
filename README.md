@@ -150,6 +150,9 @@ Things to know:
 
 ## Troubleshooting
 
+**The fields stay on *Searching...* although the *Pinion Smart.Shift* app shows CONNECTED:** this can happen
+right after installing or updating the extension, when the Karoo has not yet reconnected to it. Restart the Karoo.
+
 Everything the extension does is logged under one tag, including each request and reply in hex:
 
 ```
