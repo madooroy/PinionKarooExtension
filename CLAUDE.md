@@ -173,7 +173,12 @@ Open questions to settle on the real hardware:
   any session up to 2026-10-23 (every status 8 so far was the gearbox's own sleep or a deliberate hold).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap). Not seen on the Karoo with
   ANT+ lights, radar, pedals and BLE heart rate connected.
-- Whether the disconnect alert shows while the ride is paused (minor, untested).
+- Disconnect alert while the ride is paused: **raised but not seen** (2026-10-23, ride paused, poll off): drop at
+  14:29:28, and the ride app logged the alert (`IN_RIDE_NOTIFICATIONS`, `EXTENSION-io.github.madooroy.pinionkaroo`,
+  eventType TIMEOUT, 14:29:28.397 to 14:29:58.398, the full 30 s) just as for the alert seen with the ride running
+  (14:18:02.843 to 14:18:32.853); the rider, watching the pause screen, did not see it. So the pause view hides it.
+  Minor: polling keeps the gearbox awake through a pause, and on resuming the fields show Searching. After a shift
+  in low-power search (from 14:31:29) the gearbox was back at 14:32:21.
 
 ## To do
 
