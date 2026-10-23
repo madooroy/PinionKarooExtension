@@ -42,7 +42,9 @@ Smart.Shift (Priority Gemini), bike stationary.
   FORGET GEARBOX at about 22:41 (GATT closed by the Karoo, well after the 2 minute pairing window), and the Karoo
   found it and reconnected straight away, without a button hold. An iPhone with nRF Connect saw the same on
   2026-10-13. So the gearbox stops advertising only after links it loses (out of range, its own idle sleep), not
-  after ones the other side closes. How long it advertises after a clean disconnect is not known.
+  after ones the other side closes. How long it advertises after a clean disconnect: under 3 minutes, likely the
+  usual 2 (2026-10-23, replacement gearbox: clean close 14:06:14, Karoo scanning again from 14:09:02 after a
+  restart, not found until a 3 s hold, found 14:09:56).
 - **The gearbox can stop answering requests while staying connectable** (2026-10-14, 22:47, Karoo off USB, after
   several clean disconnects and reconnects that evening): every connection succeeded up to the subscriptions, the
   write of the first read request was acknowledged, but no reply came, and the extension dropped the link after 5 s
@@ -167,8 +169,11 @@ Open questions to settle on the real hardware:
   (the rider nearly missed the 10 s one). A sticky alert (`autoDismissMs = null`) was considered and left out:
   karoo-ext has no effect to take an alert down when the gearbox comes back, and it would cover the top of the page.
 - Whether anything differs outdoors (it held 122 minutes stationary and an hour on rollers).
-- Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
-- 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap).
+- Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log). Not seen in
+  any session up to 2026-10-23 (every status 8 so far was the gearbox's own sleep or a deliberate hold).
+- 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap). Not seen on the Karoo with
+  ANT+ lights, radar, pedals and BLE heart rate connected.
+- Whether the disconnect alert shows while the ride is paused (minor, untested).
 
 ## To do
 
@@ -176,11 +181,13 @@ Open questions to settle on the real hardware:
   (seen 2026-10-11 20:02, right after a reinstall; cause not established).
 - Scanning: `SCAN_MODE_LOW_LATENCY` for the first 2 minutes of a search (the pairing window), then
   `SCAN_MODE_LOW_POWER` (logged "scanning in low-power mode"), so a rider who rides on after a dropped link does not
-  drain the Karoo. Each new search (after a failed or ended connection) starts fast again. Not yet checked on the
-  Karoo: that a 3 s hold during the low-power phase is still picked up within seconds.
+  drain the Karoo. Each new search (after a failed or ended connection) starts fast again. Checked 2026-10-23 with
+  0.1.3: drop 14:18:02, low-power from 14:20:03, the rider shifted once about a minute later and the gearbox was
+  found at 14:21:21 and connected at 14:21:23. The new disconnect alert ("PINION OFFLINE / Shift once, or hold /
+  rear 3 s") fitted without cutting and stayed up about 30 s.
 - Repository renamed 2026-10-23 to `madooroy/PinionKarooExtension` (GitHub redirects the old name); 0.1.3's
   manifest links use the new name. The APK keeps the file name `pinion-karoo-extension-<version>.apk`.
-- Version 0.1.3 (in progress: update manifest, low-power scan, disconnect wording): versionCode 4. The version is in three places, `versionName`/
+- Version 0.1.3 (update manifest, low-power scan, disconnect wording; built and checked on the Karoo 2026-10-23, release pending): versionCode 4. The version is in three places, `versionName`/
   `versionCode` in `app/build.gradle.kts`, the `KarooExtension` constructor in `PinionExtensionService`, and
   `app/manifest.json`; `ReleaseVersionTest` fails unless they agree (and unless `latestApkUrl` names the release's
   APK). Release APKs are signed with the debug key of the author's laptop, so they must be built there for an
