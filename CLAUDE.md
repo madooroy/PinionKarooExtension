@@ -256,6 +256,8 @@ Karoo facts that shaped the code (the layout ones found on a Karoo 2, 2026-10-07
   created" after it), so the status screen connected to the gearbox by itself while the ride page fields stayed on
   Searching. The crash buffer held only Android Studio's own `installer` helper (SIGBUS), nothing from the extension.
   A Karoo restart fixes it. The two clients cannot both hold the gearbox, which takes one connection.
+- The Karoo's built-in Front Gear / Rear Gear fields (Di2, AXS) are an easy mistake for a Pinion rider; the author
+  picked them first. The README warns about it at the "Add the fields" step.
 - Screenshots for checking layout: `adb exec-out screencap -p > shot.png`.
 
 ## Build and install
