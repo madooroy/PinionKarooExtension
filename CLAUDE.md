@@ -146,9 +146,10 @@ Source: Tim Angus's reverse engineering, <https://github.com/timangus/garmin-con
   percent), number of gears `00 25 00` (1), serial `18 10 04` (4).
 - Connection sequence: connect, discover, enable indications on Response, enable notifications on Gear, then read.
   One GATT operation at a time.
-- **Advertising:** only after the rear shift button is held for 3 seconds. It is not bonding. When a
-  connection drops the gearbox stops advertising, so reconnecting always needs the button again;
-  the client just scans until that happens and the field shows "Hold shift 3s".
+- **Advertising:** after power-on and after a 3 s hold of the rear shift button (2 minutes each), after a clean
+  disconnect, and (replacement gearbox, 2026-10-23) after a shift wakes it from its 8 minute sleep. It is not
+  bonding. Out of range it stops; the client just scans (fast for 2 minutes, then low power) and the fields show
+  Searching. The disconnect alert says "Shift once, or hold rear button 3 s".
 
 Open questions to settle on the real hardware:
 - Does the gearbox advertise again when it wakes from its 8 minute sleep? **First answer: no** (2026-10-21,
@@ -160,7 +161,8 @@ Open questions to settle on the real hardware:
   shift 13:31:02, link lost 13:39:06 with status 8 (8 min 4 s); the rider shifted once (no hold) and the Karoo found
   the gearbox again at 13:39:52 and was connected at 13:39:53, gear 3 (the waking shift was carried out, gear 5 to
   3). So on this box waking it with a shift is enough; the first box's "no" may have been part of its pairing fault.
-  The disconnect alert could say "shift once" first.
+  The disconnect alert now says "Shift once, or hold rear button 3 s" (0.1.3). Whether the alert shows while the
+  ride is paused (the pause screen was up at 13:39) is not known.
 - Whether anything differs outdoors (it held 122 minutes stationary and an hour on rollers).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap).
@@ -173,7 +175,9 @@ Open questions to settle on the real hardware:
   `SCAN_MODE_LOW_POWER` (logged "scanning in low-power mode"), so a rider who rides on after a dropped link does not
   drain the Karoo. Each new search (after a failed or ended connection) starts fast again. Not yet checked on the
   Karoo: that a 3 s hold during the low-power phase is still picked up within seconds.
-- Version 0.1.3 (in progress: update manifest): versionCode 4. The version is in three places, `versionName`/
+- Repository renamed 2026-10-23 to `madooroy/PinionKarooExtension` (GitHub redirects the old name); 0.1.3's
+  manifest links use the new name. The APK keeps the file name `pinion-karoo-extension-<version>.apk`.
+- Version 0.1.3 (in progress: update manifest, low-power scan, disconnect wording): versionCode 4. The version is in three places, `versionName`/
   `versionCode` in `app/build.gradle.kts`, the `KarooExtension` constructor in `PinionExtensionService`, and
   `app/manifest.json`; `ReleaseVersionTest` fails unless they agree (and unless `latestApkUrl` names the release's
   APK). Release APKs are signed with the debug key of the author's laptop, so they must be built there for an

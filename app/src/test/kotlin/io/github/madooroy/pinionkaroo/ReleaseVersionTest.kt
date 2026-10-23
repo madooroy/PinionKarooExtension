@@ -29,7 +29,7 @@ class ReleaseVersionTest {
         val apkUrl = find("manifest.json", """"latestApkUrl"\s*:\s*"([^"]+)"""")
         assertEquals(
             "manifest.json latestApkUrl",
-            "https://github.com/madooroy/pinion-karoo-extension/releases/download/v$name/pinion-karoo-extension-$name.apk",
+            "https://github.com/madooroy/PinionKarooExtension/releases/download/v$name/pinion-karoo-extension-$name.apk",
             apkUrl,
         )
     }

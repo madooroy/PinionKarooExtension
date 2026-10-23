@@ -9,7 +9,8 @@
     <string name="battery_description">Battery level of the Pinion Smart.Shift gearbox (%)</string>
 
     <string name="alert_disconnected_title">Pinion disconnected</string>
-    <string name="alert_disconnected_detail">Hold the rear shift button for 3 seconds to reconnect</string>
+    <!-- The alert detail shows about two lines (some 35 characters on a Karoo 2) -->
+    <string name="alert_disconnected_detail">Shift once, or hold rear button 3 s</string>
 
     <string name="alert_battery_low_title">Pinion battery low</string>
     <string name="alert_battery_very_low_title">Pinion battery very low</string>
@@ -21,5 +22,5 @@
     <string name="forget_title">Forget gearbox?</string>
     <string name="forget_message">The Karoo will stop looking for %1$s and connect to the next Pinion gearbox it finds in pairing mode.</string>
     <string name="forget_confirm">Forget</string>
-    <string name="main_help">The gearbox only advertises after the rear shift button is held for 3 seconds. Do that once with this extension running and it connects by itself. After a dropped connection the gearbox stops advertising, so hold the button again.</string>
+    <string name="main_help">The gearbox only advertises after the rear shift button is held for 3 seconds. Do that once with this extension running and it connects by itself. If the connection drops, shift once to wake the gearbox; if it does not come back, hold the button again.</string>
 </resources>

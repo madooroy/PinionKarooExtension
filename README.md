@@ -1,4 +1,4 @@
-# pinion-karoo-extension
+# PinionKarooExtension
 
 Show the **current gear** and **battery level** of a **Pinion Smart.Shift** gearbox on a
 **Hammerhead Karoo**.
@@ -68,7 +68,7 @@ Hammerhead lets the current Karoo install apps shared from the Hammerhead Compan
 ([Hammerhead's instructions](https://support.hammerhead.io/hc/en-us/articles/31576497036827-Companion-App-Sideloading);
 Karoo software 1.538.2049 or later, Karoo on Wi-Fi).
 
-1. On your phone, open the [latest release](https://github.com/madooroy/pinion-karoo-extension/releases/latest).
+1. On your phone, open the [latest release](https://github.com/madooroy/PinionKarooExtension/releases/latest).
 2. Long-press `pinion-karoo-extension-<version>.apk`, choose **Share** and pick the **Hammerhead** Companion app.
 3. Tap **Install** on the Karoo.
 4. Carry on at step 4 below.
@@ -79,7 +79,7 @@ Not yet tried by the author, who rides a Karoo 2: please open an issue to say wh
 ### Karoo 2 (or any Karoo): with a computer
 
 1. **Download the app.** Get `pinion-karoo-extension-<version>.apk` from the
-   [latest release](https://github.com/madooroy/pinion-karoo-extension/releases/latest).
+   [latest release](https://github.com/madooroy/PinionKarooExtension/releases/latest).
 
 2. **Switch on USB debugging on the Karoo:** *Settings > About*, tap *Build number* until developer mode
    is on, then *Settings > Developer options > USB debugging*. Connect the Karoo to a computer by USB
@@ -129,9 +129,9 @@ Things to know:
 
 - **The first gearbox found is remembered**, and from then on only that one is used. To pair a different
   one, open the *Pinion Smart.Shift* app on the Karoo and tap **Forget gearbox**.
-- **If the connection drops, the gearbox stops advertising.** That is how the gearbox works, not something
-  the Karoo can fix: hold the shift button for three seconds again. During a ride the Karoo shows an alert
-  telling you so.
+- **If the connection drops, shift once.** The extension keeps the gearbox awake, but if the link is lost (for
+  instance after the gearbox's 8 minute sleep) a single shift wakes it and the Karoo reconnects within seconds.
+  If it does not, hold the rear shift button for three seconds. During a ride the Karoo shows an alert saying so.
 - **A quick run of shifts can show as one jump** (1, then 5). The gearbox reports only the gear it lands
   in. Pinion's manual says a shift is carried out when the cranks reach the vertical position, and in testing
   several quick presses were held until then and made in one go. Shifts to easier gears with the cranks still

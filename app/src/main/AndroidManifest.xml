@@ -55,7 +55,7 @@
              GitHub release; app/manifest.json is its source. -->
         <meta-data
             android:name="io.hammerhead.karooext.MANIFEST_URL"
-            android:value="https://github.com/madooroy/pinion-karoo-extension/releases/latest/download/manifest.json" />
+            android:value="https://github.com/madooroy/PinionKarooExtension/releases/latest/download/manifest.json" />
     </application>
 
 </manifest>

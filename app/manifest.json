@@ -1,12 +1,12 @@
 {
   "label": "Pinion Smart.Shift",
   "packageName": "io.github.madooroy.pinionkaroo",
-  "latestApkUrl": "https://github.com/madooroy/pinion-karoo-extension/releases/download/v0.1.3/pinion-karoo-extension-0.1.3.apk",
+  "latestApkUrl": "https://github.com/madooroy/PinionKarooExtension/releases/download/v0.1.3/pinion-karoo-extension-0.1.3.apk",
   "latestVersion": "0.1.3",
   "latestVersionCode": 4,
   "developer": "madooroy",
   "description": "Shows the current gear and battery level of a Pinion Smart.Shift gearbox as Karoo data fields, with a low-battery alert at 20, 10 and 5 %. Unofficial: not affiliated with Pinion or Hammerhead. Built on Tim Angus's reverse engineering of the Smart.Shift Bluetooth protocol.",
-  "releaseNotes": "Karoo can now show this extension's details and offer updates. Uses less Karoo battery while the gearbox cannot be found: after 2 minutes the search drops to a low-power mode.",
-  "screenshotUrls": ["https://raw.githubusercontent.com/madooroy/pinion-karoo-extension/main/docs/fields.png"],
+  "releaseNotes": "Karoo can now show this extension's details and offer updates. Uses less Karoo battery while the gearbox cannot be found: after 2 minutes the search drops to a low-power mode. The disconnect alert now says to shift once first: the gearbox comes back by itself after waking.",
+  "screenshotUrls": ["https://raw.githubusercontent.com/madooroy/PinionKarooExtension/main/docs/fields.png"],
   "tags": ["performance"]
 }
