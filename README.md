@@ -125,6 +125,11 @@ You need [Android Studio](https://developer.android.com/studio).
    seconds and release it. The LED on the Smart.Shift box flashes blue.
 3. The Karoo connects by itself and the field shows the gear.
 
+You do this from the ride page itself, before or during a ride: there is no need to open the *Pinion
+Smart.Shift* app first. The app is only needed once after installing (for the permission), to forget a gearbox,
+or to look at the connection status. The same goes for reconnecting later: with the ride page open, shift once or
+hold the button, and the fields come back by themselves.
+
 Things to know:
 
 - **The first gearbox found is remembered**, and from then on only that one is used. To pair a different
