@@ -156,6 +156,11 @@ Open questions to settle on the real hardware:
   status 8 (8 min 4 s), Karoo scanning from 06:33:35 on the status screen; one shift (not a hold) about 06:35 woke
   the gearbox but the Karoo did not find it in the next minute or two. So the disconnect alert's "hold the rear
   shift button" wording stays. Repeat once on the replacement gearbox, ideally with nRF Connect scanning.
+  **Replacement gearbox: yes** (2026-10-23, `pinion-2026-10-23.log`, ride screen open, ride paused): poll off, last
+  shift 13:31:02, link lost 13:39:06 with status 8 (8 min 4 s); the rider shifted once (no hold) and the Karoo found
+  the gearbox again at 13:39:52 and was connected at 13:39:53, gear 3 (the waking shift was carried out, gear 5 to
+  3). So on this box waking it with a shift is enough; the first box's "no" may have been part of its pairing fault.
+  The disconnect alert could say "shift once" first.
 - Whether anything differs outdoors (it held 122 minutes stationary and an hour on rollers).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap).
