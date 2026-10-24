@@ -193,7 +193,7 @@ Open questions to settle on the real hardware:
 - Repository renamed 2026-10-23 to `madooroy/PinionKarooExtension` (GitHub redirects the old name); 0.1.3's
   manifest links use the new name. The APK keeps the file name `pinion-karoo-extension-<version>.apk`.
 - Version 0.1.4 in progress (split fields): versionCode 5, all three places bumped. Still to check on the Karoo:
-  live values in all four pairs; 3s Spd + Gear against the native 3s Speed beside it (speed is taken as m/s and
+  live values in all five pairs (Batt + Gear: preview sample 88 / 7 not yet seen); 3s Spd + Gear against the native 3s Speed beside it (speed is taken as m/s and
   converted with the profile's distance unit); zone colours against native power and HR fields in zone colour mode.
   The colour table is Barberfish's and may be a Karoo 3 one: the Karoo 2 profile editor painted its sample power
   field #60EEB2 and HR field #00B988, which are not in it, so calibrate from a ride screenshot. Zone fills cover the
