@@ -17,7 +17,8 @@ import io.hammerhead.karooext.models.ViewConfig
  * margin, and the value just above the centre of the space below.
  */
 object SplitFieldRenderer {
-    class Half(val label: String, val value: String?)
+    /** One half: its label, its value (null shows a grey dash), and an optional zone colour fill */
+    class Half(val label: String, val value: String?, val fill: Int? = null)
 
     private const val PLACEHOLDER = "--"
 
@@ -45,6 +46,24 @@ object SplitFieldRenderer {
         val half = width / 2f
         val nativeValuePx = textSizeSp * density
 
+        // Zone colour fills first, under the text, with the cell's rounded corners on the outer side
+        fun fillHalf(color: Int, isLeft: Boolean) {
+            val radius = 8f * density
+            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { this.color = color }
+            canvas.save()
+            if (isLeft) {
+                canvas.clipRect(0f, 0f, half, height.toFloat())
+                canvas.drawRoundRect(0f, 0f, half + radius, height.toFloat(), radius, radius, paint)
+            } else {
+                canvas.clipRect(half, 0f, width.toFloat(), height.toFloat())
+                canvas.drawRoundRect(half - radius, 0f, width.toFloat(), height.toFloat(), radius, radius, paint)
+            }
+            canvas.restore()
+        }
+        left.fill?.let { fillHalf(it, isLeft = true) }
+        right.fill?.let { fillHalf(it, isLeft = false) }
+        fun textColor(h: Half) = h.fill?.let { io.github.madooroy.pinionkaroo.ZoneColors.textOn(it) } ?: foreground
+
         // Header: a label about a third the native value size, centred in a two-line band like native
         // two-column cells reserve
         val labelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -57,7 +76,9 @@ object SplitFieldRenderer {
         labelPaint.getTextBounds("CAD", 0, 3, labelBounds)
         val headerHeight = labelPaint.textSize * 2f
         val labelBaseline = (headerHeight + labelBounds.height()) / 2f
+        labelPaint.color = textColor(left)
         canvas.drawText(left.label.uppercase(), half - pad, labelBaseline, labelPaint)
+        labelPaint.color = textColor(right)
         canvas.drawText(right.label.uppercase(), width - pad, labelBaseline, labelPaint)
 
         // Values: one size for both halves, so the two numbers line up. Fit the digit height to the band
@@ -85,8 +106,8 @@ object SplitFieldRenderer {
         valuePaint.getTextBounds("0", 0, 1, digit)
         val valueBaseline = bandTop + (band + digit.height()) / 2f - 2f * density
 
-        fun drawValue(text: String, halfLeft: Float, halfRight: Float, placeholder: Boolean) {
-            valuePaint.color = if (placeholder) muted else foreground
+        fun drawValue(text: String, halfLeft: Float, halfRight: Float, placeholder: Boolean, color: Int) {
+            valuePaint.color = if (placeholder) muted else color
             when (alignment) {
                 ViewConfig.Alignment.LEFT -> {
                     valuePaint.textAlign = Paint.Align.LEFT
@@ -102,10 +123,11 @@ object SplitFieldRenderer {
                 }
             }
         }
-        drawValue(leftText, 0f, half, left.value == null)
-        drawValue(rightText, half, width.toFloat(), right.value == null)
+        drawValue(leftText, 0f, half, left.value == null, textColor(left))
+        drawValue(rightText, half, width.toFloat(), right.value == null, textColor(right))
 
-        // A thin divider between the halves, below the labels
+        // A thin divider between the halves, below the labels; a fill already marks the edge
+        if (left.fill != null || right.fill != null) return bitmap
         val dividerPaint = Paint().apply {
             color = divider
             strokeWidth = density.coerceAtLeast(1f)

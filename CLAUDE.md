@@ -192,7 +192,12 @@ Open questions to settle on the real hardware:
   rear 3 s") fitted without cutting and stayed up about 30 s.
 - Repository renamed 2026-10-23 to `madooroy/PinionKarooExtension` (GitHub redirects the old name); 0.1.3's
   manifest links use the new name. The APK keeps the file name `pinion-karoo-extension-<version>.apk`.
-- Version 0.1.4 in progress (split field "3s Cad + Gear"): versionCode 5, all three places bumped.
+- Version 0.1.4 in progress (split fields): versionCode 5, all three places bumped. Still to check on the Karoo:
+  live values in all four pairs; 3s Spd + Gear against the native 3s Speed beside it (speed is taken as m/s and
+  converted with the profile's distance unit); zone colours against native power and HR fields in zone colour mode.
+  The colour table is Barberfish's and may be a Karoo 3 one: the Karoo 2 profile editor painted its sample power
+  field #60EEB2 and HR field #00B988, which are not in it, so calibrate from a ride screenshot. Zone fills cover the
+  partner half only, rounded on the outer corners, and replace the divider.
 - Version 0.1.3 released 2026-10-23 (tag v0.1.3 at 7db8124; update manifest, low-power scan, disconnect wording), assets the APK and `manifest.json` (forgetting the manifest gives a 404 at `releases/latest/download/manifest.json`; check it after each release): versionCode 4. Next release: versionCode 5. The version is in three places, `versionName`/
   `versionCode` in `app/build.gradle.kts`, the `KarooExtension` constructor in `PinionExtensionService`, and
   `app/manifest.json`; `ReleaseVersionTest` fails unless they agree (and unless `latestApkUrl` names the release's
@@ -218,9 +223,11 @@ Open questions to settle on the real hardware:
 - `PinionBleClient.kt`: scan, connect, subscribe, poll the gear every 60 s and the battery every 5 minutes (the gear poll corrects a lost notification and logs "Gear poll"; any read also resets the gearbox's 8 minute idle switch-off; the status screen has a test button that switches the poll between gear + battery, gear only, battery only and off, kept in prefs), retry forever. Publishes `StateFlow<PinionState>`. Process-wide singleton. Runs only while the active ride profile contains a Pinion field (`ActiveRideProfile` event, handled in the service) or the status activity is open, and for 2 minutes after. Field streams are no use for this: Karoo keeps them running whatever profile is open.
 - `extension/PinionExtensionService.kt`: the `KarooExtension` service; owns the client's lifetime, requests the BT radio from Karoo, raises an in-ride alert on disconnect, and a low-battery alert once per connection at 20 % or less and again at 10 % and at 5 % or less (so the battery field can be left off a crowded page: the map page takes only four fields, 2x2, and they cannot be made half width).
 - `extension/PinionDataType.kt`: one class for both numeric fields; it only streams a value, Karoo draws the field.
-- `extension/CadenceGearDataType.kt` + `SplitFieldRenderer.kt`: the drawn split field "3s Cad + Gear".
+- `extension/SplitGearDataType.kt` (one class, `SplitPartner` enum) + `SplitFieldRenderer.kt`: the drawn split fields
+  "3s Cad + Gear", "3s Pwr + Gear", "HR + Gear", "3s Spd + Gear" (gear always the right half).
+- `ZoneColors.kt`: zone index and Karoo zone colours for the split fields. Pure Kotlin, covered by `ZoneColorsTest`.
 - `MainActivity.kt`: requests Bluetooth/location runtime permissions, shows live status, "Forget gearbox".
-- `res/xml/extension_info.xml`: extension id `pinion`, type ids `gear`, `battery` and `cadence_gear`. These must match the Kotlin constants.
+- `res/xml/extension_info.xml`: extension id `pinion`, type ids `gear`, `battery`, `cadence_gear`, `power_gear`, `hr_gear`, `speed_gear`. These must match the Kotlin constants.
 
 Karoo facts that shaped the code (the layout ones found on a Karoo 2, 2026-10-07):
 - The manifest action is `io.hammerhead.karooext.KAROO_EXTENSION`.

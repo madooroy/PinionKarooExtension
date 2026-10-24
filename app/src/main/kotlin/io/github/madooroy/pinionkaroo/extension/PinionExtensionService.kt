@@ -5,6 +5,7 @@ import io.github.madooroy.pinionkaroo.LowBatteryWarning
 import io.github.madooroy.pinionkaroo.PinionLink
 import io.github.madooroy.pinionkaroo.R
 import io.hammerhead.karooext.KarooSystemService
+import io.hammerhead.karooext.extension.DataTypeImpl
 import io.hammerhead.karooext.extension.KarooExtension
 import io.hammerhead.karooext.models.ActiveRideProfile
 import io.hammerhead.karooext.models.DataType
@@ -47,7 +48,7 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.4") {
     private val activeStreams = MutableStateFlow(0)
 
     override val types by lazy {
-        listOf(
+        listOf<DataTypeImpl>(
             // Limits: only a gear within 1..gearCount (at most 12) is ever shown
             PinionDataType(
                 client, extension, PinionDataType.GEAR,
@@ -61,14 +62,15 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.4") {
                 onStreamStarted = { activeStreams.update { it + 1 } },
                 onStreamStopped = { activeStreams.update { it - 1 } },
             ),
-            // A drawn field: Karoo starts its view, not a stream, so count views too (the low-battery
-            // alert waits for the ride screen)
-            CadenceGearDataType(
-                client, karooSystem, extension,
+        ) + SplitPartner.values().map { partner ->
+            // Drawn fields: Karoo starts their views, not streams, so count views too (the low-battery alert
+            // waits for the ride screen)
+            SplitGearDataType(
+                client, karooSystem, extension, partner,
                 onViewStarted = { activeStreams.update { it + 1 } },
                 onViewStopped = { activeStreams.update { it - 1 } },
-            ),
-        )
+            )
+        }
     }
 
     override fun onCreate() {

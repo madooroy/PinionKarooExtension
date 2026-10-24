@@ -21,4 +21,22 @@
         graphical="true"
         icon="@drawable/ic_pinion"
         typeId="cadence_gear" />
+    <DataType
+        description="@string/power_gear_description"
+        displayName="@string/power_gear"
+        graphical="true"
+        icon="@drawable/ic_pinion"
+        typeId="power_gear" />
+    <DataType
+        description="@string/hr_gear_description"
+        displayName="@string/hr_gear"
+        graphical="true"
+        icon="@drawable/ic_pinion"
+        typeId="hr_gear" />
+    <DataType
+        description="@string/speed_gear_description"
+        displayName="@string/speed_gear"
+        graphical="true"
+        icon="@drawable/ic_pinion"
+        typeId="speed_gear" />
 </ExtensionInfo>

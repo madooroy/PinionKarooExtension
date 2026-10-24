@@ -16,3 +16,10 @@ fun KarooSystemService.streamDataFlow(dataTypeId: String): Flow<StreamState> =
         }
         awaitClose { removeConsumer(listenerId) }
     }
+
+/** Every event of type [T] (UserProfile, RideState, ...) as a Flow. From the karoo-ext sample app. */
+inline fun <reified T : io.hammerhead.karooext.models.KarooEvent> KarooSystemService.consumerFlow(): Flow<T> =
+    callbackFlow {
+        val listenerId = addConsumer<T> { trySend(it) }
+        awaitClose { removeConsumer(listenerId) }
+    }
