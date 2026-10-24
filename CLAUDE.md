@@ -198,6 +198,9 @@ Open questions to settle on the real hardware:
   The colour table is Barberfish's and may be a Karoo 3 one: the Karoo 2 profile editor painted its sample power
   field #60EEB2 and HR field #00B988, which are not in it, so calibrate from a ride screenshot. Zone fills cover the
   partner half only, rounded on the outer corners, and replace the divider.
+  Profile-editor previews of all four checked on the Karoo 2 2026-10-23 (a 2x2 map page of the four split fields):
+  speed sample 9.33 m/s shown as 20.9, so the imperial unit is picked up; 187 W and 132 bpm both fell in the
+  rider's zone 2 and filled #40D078 with black text, against #60EEB2 for the Karoo's own zone 2 sample.
 - Version 0.1.3 released 2026-10-23 (tag v0.1.3 at 7db8124; update manifest, low-power scan, disconnect wording), assets the APK and `manifest.json` (forgetting the manifest gives a 404 at `releases/latest/download/manifest.json`; check it after each release): versionCode 4. Next release: versionCode 5. The version is in three places, `versionName`/
   `versionCode` in `app/build.gradle.kts`, the `KarooExtension` constructor in `PinionExtensionService`, and
   `app/manifest.json`; `ReleaseVersionTest` fails unless they agree (and unless `latestApkUrl` names the release's
