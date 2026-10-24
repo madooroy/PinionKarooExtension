@@ -15,4 +15,10 @@
         graphical="false"
         icon="@drawable/ic_pinion"
         typeId="battery" />
+    <DataType
+        description="@string/cadence_gear_description"
+        displayName="@string/cadence_gear"
+        graphical="true"
+        icon="@drawable/ic_pinion"
+        typeId="cadence_gear" />
 </ExtensionInfo>

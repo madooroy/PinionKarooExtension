@@ -33,7 +33,7 @@ import timber.log.Timber
  * its pages, so riding another bike with another profile does not scan.
  * (Field streams cannot be used for this: Karoo keeps them running whatever profile is open.)
  */
-class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.3") {
+class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.4") {
     private lateinit var karooSystem: KarooSystemService
     private lateinit var client: PinionBleClient
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -60,6 +60,13 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.3") {
                 value = { state -> state.batteryPercent },
                 onStreamStarted = { activeStreams.update { it + 1 } },
                 onStreamStopped = { activeStreams.update { it - 1 } },
+            ),
+            // A drawn field: Karoo starts its view, not a stream, so count views too (the low-battery
+            // alert waits for the ride screen)
+            CadenceGearDataType(
+                client, karooSystem, extension,
+                onViewStarted = { activeStreams.update { it + 1 } },
+                onViewStopped = { activeStreams.update { it - 1 } },
             ),
         )
     }

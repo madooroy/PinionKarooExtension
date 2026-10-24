@@ -9,7 +9,9 @@ It is a Karoo extension (built on [karoo-ext](https://github.com/hammerheadnav/k
 to the gearbox over Bluetooth and adds two data fields you can put on any ride page:
 
 - **Pinion Gear** - the gear you are in (1 to 12, or as many as your gearbox has);
-- **Pinion Battery** - the Smart.Shift battery level in percent.
+- **Pinion Battery** - the Smart.Shift battery level in percent;
+- **3s Cad + Gear** - one field split in two: the Karoo's 3 second cadence on the left, the Pinion gear on the
+  right. Handy on the map page, which has only four fields: speed, power, heart rate and this one fit them all.
 
 They are ordinary Karoo fields, so they look and behave like the built-in ones.
 

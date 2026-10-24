@@ -192,6 +192,7 @@ Open questions to settle on the real hardware:
   rear 3 s") fitted without cutting and stayed up about 30 s.
 - Repository renamed 2026-10-23 to `madooroy/PinionKarooExtension` (GitHub redirects the old name); 0.1.3's
   manifest links use the new name. The APK keeps the file name `pinion-karoo-extension-<version>.apk`.
+- Version 0.1.4 in progress (split field "3s Cad + Gear"): versionCode 5, all three places bumped.
 - Version 0.1.3 released 2026-10-23 (tag v0.1.3 at 7db8124; update manifest, low-power scan, disconnect wording), assets the APK and `manifest.json` (forgetting the manifest gives a 404 at `releases/latest/download/manifest.json`; check it after each release): versionCode 4. Next release: versionCode 5. The version is in three places, `versionName`/
   `versionCode` in `app/build.gradle.kts`, the `KarooExtension` constructor in `PinionExtensionService`, and
   `app/manifest.json`; `ReleaseVersionTest` fails unless they agree (and unless `latestApkUrl` names the release's
@@ -216,9 +217,10 @@ Open questions to settle on the real hardware:
 - `LowBatteryWarning.kt`: when to raise the low-battery alert. Pure Kotlin, covered by `LowBatteryWarningTest`.
 - `PinionBleClient.kt`: scan, connect, subscribe, poll the gear every 60 s and the battery every 5 minutes (the gear poll corrects a lost notification and logs "Gear poll"; any read also resets the gearbox's 8 minute idle switch-off; the status screen has a test button that switches the poll between gear + battery, gear only, battery only and off, kept in prefs), retry forever. Publishes `StateFlow<PinionState>`. Process-wide singleton. Runs only while the active ride profile contains a Pinion field (`ActiveRideProfile` event, handled in the service) or the status activity is open, and for 2 minutes after. Field streams are no use for this: Karoo keeps them running whatever profile is open.
 - `extension/PinionExtensionService.kt`: the `KarooExtension` service; owns the client's lifetime, requests the BT radio from Karoo, raises an in-ride alert on disconnect, and a low-battery alert once per connection at 20 % or less and again at 10 % and at 5 % or less (so the battery field can be left off a crowded page: the map page takes only four fields, 2x2, and they cannot be made half width).
-- `extension/PinionDataType.kt`: one class for both fields; it only streams a value, Karoo draws the field.
+- `extension/PinionDataType.kt`: one class for both numeric fields; it only streams a value, Karoo draws the field.
+- `extension/CadenceGearDataType.kt` + `SplitFieldRenderer.kt`: the drawn split field "3s Cad + Gear".
 - `MainActivity.kt`: requests Bluetooth/location runtime permissions, shows live status, "Forget gearbox".
-- `res/xml/extension_info.xml`: extension id `pinion`, type ids `gear` and `battery`. These must match the Kotlin constants.
+- `res/xml/extension_info.xml`: extension id `pinion`, type ids `gear`, `battery` and `cadence_gear`. These must match the Kotlin constants.
 
 Karoo facts that shaped the code (the layout ones found on a Karoo 2, 2026-10-07):
 - The manifest action is `io.hammerhead.karooext.KAROO_EXTENSION`.
@@ -233,6 +235,17 @@ Karoo facts that shaped the code (the layout ones found on a Karoo 2, 2026-10-07
   - `ViewEmitter.updateView` drops updates faster than about 1 Hz.
   With `graphical="false"` and no `startView`, Karoo draws title and number itself and shows "Searching..."
   while disconnected. The in-ride alert carries the "hold the button" instruction instead.
+- **The split field "3s Cad + Gear"** (`cadence_gear`, graphical, 0.1.4, not yet seen on the Karoo) gets round all
+  of that the way Barberfish does (<https://github.com/jpweytjens/Barberfish>, docs/sdk-findings.md and
+  architecture.md, tested on Karoo 2 firmware 1.613.2351.12): `showHeader = false`, and the whole cell, labels
+  included, drawn into one bitmap set on a single ImageView (`res/layout/split_field.xml`), so no RemoteViews
+  method is called that Android 8 rejects. The Karoo's fonts are reachable by name in our own process:
+  `Typeface.create("relative")` for numbers, `"ibm-plex-sans-condensed"` for labels. Night mode from
+  `configuration.uiMode`. Updates are conflated and spaced 1 s apart because `updateView` drops calls under 0.9 s.
+  Cadence comes from `DataType.Type.SMOOTHED_3S_AVERAGE_CADENCE` via `streamDataFlow` (KarooStreams.kt). Its views
+  count as "ride screen open" for the low-battery alert. To check on the Karoo: label and value sizes against the
+  native fields beside it, light theme, the profile editor preview (sample 85 / 7), and "--" while a sensor or
+  the gearbox is missing.
 - Karoo wraps a field title longer than about 9-10 characters in a half-width field ("MAX POWER" fits,
   "PINION GEAR" wraps). It also caches a field's title in the profile: a changed `displayName` only shows after
   the field is removed and added again. Switching `graphical` took effect without re-adding.

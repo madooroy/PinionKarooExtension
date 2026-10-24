@@ -6,6 +6,11 @@
     <string name="gear">Pinion Gear</string>
     <string name="gear_description">Current gear of the Pinion Smart.Shift gearbox</string>
     <string name="battery">Pinion Battery</string>
+    <string name="cadence_gear">3s Cad + Gear</string>
+    <string name="cadence_gear_description">3 second cadence and the Pinion gear side by side in one field</string>
+    <!-- Labels drawn in the two halves of the split field: short, they share half a cell each -->
+    <string name="split_cadence_label">3s Cad</string>
+    <string name="split_gear_label">Gear</string>
     <string name="battery_description">Battery level of the Pinion Smart.Shift gearbox (%)</string>
 
     <string name="alert_disconnected_title">Pinion offline</string>

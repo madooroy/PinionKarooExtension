@@ -12,8 +12,8 @@ android {
         // Karoo 2 runs Android 8 (API 26); Karoo 3 runs Android 13 (API 33)
         minSdk = 26
         targetSdk = 34
-        versionCode = 4
-        versionName = "0.1.3"  // also in PinionExtensionService
+        versionCode = 5
+        versionName = "0.1.4"  // also in PinionExtensionService
     }
 
     buildTypes {
