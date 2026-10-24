@@ -4,7 +4,7 @@ import io.github.madooroy.pinionkaroo.PinionBleClient
 import io.github.madooroy.pinionkaroo.LowBatteryWarning
 import io.github.madooroy.pinionkaroo.PinionLink
 import io.github.madooroy.pinionkaroo.R
-import io.github.madooroy.pinionkaroo.ShiftCounter
+import io.github.madooroy.pinionkaroo.RideGearStats
 import io.hammerhead.karooext.KarooSystemService
 import io.hammerhead.karooext.extension.DataTypeImpl
 import io.hammerhead.karooext.extension.KarooExtension
@@ -23,14 +23,20 @@ import io.hammerhead.karooext.models.WriteToRecordMesg
 import io.hammerhead.karooext.models.WriteToSessionMesg
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -46,6 +52,10 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.4") {
     private lateinit var karooSystem: KarooSystemService
     private lateinit var client: PinionBleClient
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    /** One thread for [trackRide] */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val rideTracking = Dispatchers.IO.limitedParallelism(1)
     private var holdsClient = false
 
     /**
@@ -54,6 +64,9 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.4") {
      * on the home screen, 12 s before the ride screen) is lost.
      */
     private val activeStreams = MutableStateFlow(0)
+
+    /** Shifts and average gear of the current (or last) ride, see [trackRide]; null before the first ride */
+    private val rideStats = MutableStateFlow<RideGearStats.Summary?>(null)
 
     override val types by lazy {
         listOf<DataTypeImpl>(
@@ -78,7 +91,11 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.4") {
                 onViewStarted = { activeStreams.update { it + 1 } },
                 onViewStopped = { activeStreams.update { it - 1 } },
             )
-        }
+        } + RideGearDataType(
+            extension, rideStats,
+            onViewStarted = { activeStreams.update { it + 1 } },
+            onViewStopped = { activeStreams.update { it - 1 } },
+        )
     }
 
     override fun onCreate() {
@@ -97,6 +114,7 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.4") {
         scope.launch { alertOnDisconnect() }
         scope.launch { alertOnLowBattery() }
         scope.launch { keepBluetoothOn() }
+        scope.launch(rideTracking) { trackRide() }
     }
 
     /**
@@ -161,40 +179,80 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.4") {
         }
     }
 
+    /** The gear while connected, else null */
+    private fun gear(): Flow<Int?> = client.state.map { state ->
+        if (state.link == PinionLink.CONNECTED) state.gear?.takeIf { it in 1..state.gearCount } else null
+    }
+
     /**
-     * Writes the gear into the ride's FIT file (Karoo calls this for each recorded ride; extension_info.xml has
-     * fitFile="true"): developer field "Pinion Gear" in every record (1 Hz) while the gearbox is connected, so
-     * intervals.icu, GoldenCheetah and the like can chart it, and "Pinion Shifts", the number of gear changes, in
-     * the session. Nothing is written while the gearbox is not connected, so the file shows a gap there.
-     * Elapsed time is only the 1 s tick, as in the karoo-ext sample.
+     * Keeps [rideStats] for the "Shifts + Avg Gear" field and the ride file: a fresh [RideGearStats] each time a
+     * ride starts (Idle to recording or paused), every gear change counted while the ride is not idle, and the
+     * gear sampled once a second while recording. Runs on one thread ([rideTracking]), so the stats need no lock.
+     * If the extension is restarted during a ride, the counts start again from there.
      */
-    override fun startFit(emitter: Emitter<FitEffect>) {
-        Timber.i("Ride file: recording the gear")
-        val counter = ShiftCounter()
-        var shiftsWritten = -1
-        val gear = client.state.map { state ->
-            if (state.link == PinionLink.CONNECTED) state.gear?.takeIf { it in 1..state.gearCount } else null
-        }
-        val job = scope.launch {
-            combine(
-                karooSystem.streamDataFlow(DataType.Type.ELAPSED_TIME),
-                gear,
-                karooSystem.consumerFlow<RideState>(),
-            ) { _, gearNow, ride -> gearNow to ride }.collect { (gearNow, ride) ->
-                if (ride is RideState.Recording) {
-                    counter.update(gearNow)
-                    if (gearNow != null) emitter.onNext(WriteToRecordMesg(FieldValue(FIT_GEAR, gearNow.toDouble())))
-                }
-                // The session value is kept as last written, so write it when it changes
-                if (ride !is RideState.Idle && counter.shifts != shiftsWritten) {
-                    emitter.onNext(WriteToSessionMesg(FieldValue(FIT_SHIFTS, counter.shifts.toDouble())))
-                    shiftsWritten = counter.shifts
+    private suspend fun trackRide() {
+        val ride: StateFlow<RideState> = karooSystem.consumerFlow<RideState>().stateIn(scope + rideTracking)
+        val gear: StateFlow<Int?> = gear().stateIn(scope + rideTracking)
+        var stats: RideGearStats? = null
+        scope.launch(rideTracking) {
+            ride.collect { state ->
+                if (state !is RideState.Idle && stats == null) {
+                    Timber.i("Ride started: counting shifts")
+                    stats = RideGearStats().also { it.onGear(gear.value) }
+                    rideStats.value = stats?.summary
+                } else if (state is RideState.Idle && stats != null) {
+                    Timber.i("Ride ended: ${stats?.summary}")
+                    stats = null // keep showing the last summary until the next ride
                 }
             }
         }
+        scope.launch(rideTracking) {
+            gear.collect { g ->
+                stats?.let { it.onGear(g); rideStats.value = it.summary }
+            }
+        }
+        while (true) {
+            delay(1_000)
+            if (ride.value is RideState.Recording) stats?.let { it.onSecond(gear.value); rideStats.value = it.summary }
+        }
+    }
+
+    /**
+     * Writes the gear into the ride's FIT file (Karoo calls this for each recorded ride; extension_info.xml has
+     * fitFile="true"): developer field "Pinion Gear" in every record (1 Hz) while the gearbox is connected, so
+     * intervals.icu, GoldenCheetah and the like can chart it, and the session totals "Pinion Shifts" and
+     * "Pinion Avg Gear" from [rideStats]. Nothing is written to a record while the gearbox is not connected, so the
+     * file shows a gap there. Elapsed time is only the 1 s tick, as in the karoo-ext sample.
+     */
+    override fun startFit(emitter: Emitter<FitEffect>) {
+        Timber.i("Ride file: recording the gear")
+        val records = scope.launch {
+            combine(
+                karooSystem.streamDataFlow(DataType.Type.ELAPSED_TIME),
+                gear(),
+                karooSystem.consumerFlow<RideState>(),
+            ) { _, gearNow, ride -> gearNow to ride }.collect { (gearNow, ride) ->
+                if (ride is RideState.Recording && gearNow != null) {
+                    emitter.onNext(WriteToRecordMesg(FieldValue(FIT_GEAR, gearNow.toDouble())))
+                }
+            }
+        }
+        // Session values are kept as last written, so write them when they change
+        val session = scope.launch {
+            rideStats.mapNotNull { summary ->
+                summary?.let { it.shifts to it.averageGear?.let { avg -> Math.round(avg * 10) / 10.0 } }
+            }.distinctUntilChanged().collect { (shifts, average) ->
+                val values = listOfNotNull(
+                    FieldValue(FIT_SHIFTS, shifts.toDouble()),
+                    average?.let { FieldValue(FIT_AVG_GEAR, it) },
+                )
+                emitter.onNext(WriteToSessionMesg(values))
+            }
+        }
         emitter.setCancellable {
-            Timber.i("Ride file: done, ${counter.shifts} shifts")
-            job.cancel()
+            Timber.i("Ride file: done, ${rideStats.value}")
+            records.cancel()
+            session.cancel()
         }
     }
 
@@ -251,6 +309,9 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.4") {
         )
         private val FIT_SHIFTS = DeveloperField(
             fieldDefinitionNumber = 1, fitBaseTypeId = 132, fieldName = "Pinion Shifts", units = "shifts",
+        )
+        private val FIT_AVG_GEAR = DeveloperField(
+            fieldDefinitionNumber = 2, fitBaseTypeId = 136, fieldName = "Pinion Avg Gear", units = "gear", // float32
         )
     }
 }

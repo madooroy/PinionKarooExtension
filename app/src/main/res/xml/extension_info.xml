@@ -46,4 +46,10 @@
         graphical="true"
         icon="@drawable/ic_pinion"
         typeId="battery_gear" />
+    <DataType
+        description="@string/shifts_avg_gear_description"
+        displayName="@string/shifts_avg_gear"
+        graphical="true"
+        icon="@drawable/ic_pinion"
+        typeId="shifts_avg_gear" />
 </ExtensionInfo>

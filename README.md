@@ -163,8 +163,11 @@ Things to know:
 - **Nothing scans unless you use the fields.** The extension only looks for the gearbox while the active
   ride profile has a Pinion field on one of its pages, so other profiles cost no battery.
 - **The gear goes into your ride file.** While a ride is recording, the gear is saved every second as an extra
-  field, "Pinion Gear", and the number of shifts as "Pinion Shifts". Sites that read extra FIT fields, such as
+  field, "Pinion Gear", and the number of shifts and the average gear as "Pinion Shifts" and "Pinion Avg Gear". Sites that read extra FIT fields, such as
   intervals.icu, can chart them afterwards; Strava ignores them. Seconds without a connection are left empty.
+- **Shifts + Avg Gear** shows the ride's shift count and its average gear while you ride. Counting starts with
+  each new ride; shifts made while the ride is paused count, and the average only takes the seconds the ride is
+  recording. After the ride the field keeps the totals until the next one starts.
 - The *Pinion Smart.Shift* app on the Karoo shows the connection status, gear and battery, which helps
   when something does not connect.
 

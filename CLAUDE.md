@@ -217,11 +217,17 @@ Open questions to settle on the real hardware:
   pushes), so the author creates it on the website.
 - **Gear in the ride file** (branch `gear-in-fit`, for 0.1.5; not yet built or tried): `startFit` in the service,
   `fitFile="true"` in extension_info.xml. Developer field 0 "Pinion Gear" (uint8) in every record while recording and
-  connected, field 1 "Pinion Shifts" (uint16, `ShiftCounter`, covered by `ShiftCounterTest`) in the session. Native
+  connected; in the session field 1 "Pinion Shifts" (uint16) and field 2 "Pinion Avg Gear" (float32, 0.1 steps),
+  both from the service's `rideStats` (`RideGearStats` + `ShiftCounter`, covered by their tests), written when
+  they change. The same `rideStats` feeds the split field "Shifts + Avg Gear" (`shifts_avg_gear`,
+  `RideGearDataType`, preview 143 / 6.4). `trackRide()` in the service: new stats when the ride leaves Idle,
+  shifts counted while running or paused, the gear sampled each second while Recording (with the gearbox
+  connected) for the average; the last ride's values stay shown until the next ride. Lost if the extension
+  restarts mid-ride (counts start again). Native
   FIT gear-change events (event 42, rear_gear_num/rear_gear teeth) were left out: a Pinion has no sprocket teeth to
   give, and tools that compute ratios from them would be misled. To check: record a short ride with shifts, then look
   for both fields in the FIT (intervals.icu activity, or fitfiletools / the FIT SDK's FitCSVTool), and the log lines
-  "Ride file: recording the gear" / "Ride file: done, N shifts".
+  "Ride started: counting shifts", "Ride ended: Summary(...)", "Ride file: done, ...".
 - Ideas, not planned: a "Pinion Cadence" field from the gearbox's CSC Measurement over the existing link (no
   second connection needed; mind the count reset quirk above), for riders without a cadence sensor. Pairing the
   gearbox as a Karoo cadence sensor instead is untested, and would take the gearbox's single connection away from
@@ -233,6 +239,7 @@ Open questions to settle on the real hardware:
 
 - `PinionProtocol.kt`: UUIDs, request encoding, reply decoding. Pure Kotlin, covered by `PinionProtocolTest`.
 - `LowBatteryWarning.kt`: when to raise the low-battery alert. Pure Kotlin, covered by `LowBatteryWarningTest`.
+- `RideGearStats.kt`: shifts and average gear of a ride. Pure Kotlin, covered by `RideGearStatsTest`.
 - `ShiftCounter.kt`: counts gear changes for the ride file. Pure Kotlin, covered by `ShiftCounterTest`.
 - `PinionBleClient.kt`: scan, connect, subscribe, poll the gear every 60 s and the battery every 5 minutes (the gear poll corrects a lost notification and logs "Gear poll"; any read also resets the gearbox's 8 minute idle switch-off; the status screen has a test button that switches the poll between gear + battery, gear only, battery only and off, kept in prefs), retry forever. Publishes `StateFlow<PinionState>`. Process-wide singleton. Runs only while the active ride profile contains a Pinion field (`ActiveRideProfile` event, handled in the service) or the status activity is open, and for 2 minutes after. Field streams are no use for this: Karoo keeps them running whatever profile is open.
 - `extension/PinionExtensionService.kt`: the `KarooExtension` service; owns the client's lifetime, requests the BT radio from Karoo, raises an in-ride alert on disconnect, and a low-battery alert once per connection at 20 % or less and again at 10 % and at 5 % or less (so the battery field can be left off a crowded page: the map page takes only four fields, 2x2, and they cannot be made half width).
@@ -242,7 +249,7 @@ Open questions to settle on the real hardware:
   the battery half reads our own client state, shown only while connected, cut off like the battery field).
 - `ZoneColors.kt`: zone index and Karoo zone colours for the split fields. Pure Kotlin, covered by `ZoneColorsTest`.
 - `MainActivity.kt`: requests Bluetooth/location runtime permissions, shows live status, "Forget gearbox".
-- `res/xml/extension_info.xml`: extension id `pinion`, type ids `gear`, `battery`, `cadence_gear`, `power_gear`, `hr_gear`, `speed_gear`, `battery_gear`. These must match the Kotlin constants.
+- `res/xml/extension_info.xml`: extension id `pinion`, type ids `gear`, `battery`, `cadence_gear`, `power_gear`, `hr_gear`, `speed_gear`, `battery_gear`, `shifts_avg_gear`. These must match the Kotlin constants.
 
 Karoo facts that shaped the code (the layout ones found on a Karoo 2, 2026-10-07):
 - The manifest action is `io.hammerhead.karooext.KAROO_EXTENSION`.
