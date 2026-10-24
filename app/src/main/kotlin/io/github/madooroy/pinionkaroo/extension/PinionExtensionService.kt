@@ -4,15 +4,23 @@ import io.github.madooroy.pinionkaroo.PinionBleClient
 import io.github.madooroy.pinionkaroo.LowBatteryWarning
 import io.github.madooroy.pinionkaroo.PinionLink
 import io.github.madooroy.pinionkaroo.R
+import io.github.madooroy.pinionkaroo.ShiftCounter
 import io.hammerhead.karooext.KarooSystemService
 import io.hammerhead.karooext.extension.DataTypeImpl
 import io.hammerhead.karooext.extension.KarooExtension
+import io.hammerhead.karooext.internal.Emitter
 import io.hammerhead.karooext.models.ActiveRideProfile
 import io.hammerhead.karooext.models.DataType
+import io.hammerhead.karooext.models.DeveloperField
+import io.hammerhead.karooext.models.FieldValue
+import io.hammerhead.karooext.models.FitEffect
 import io.hammerhead.karooext.models.InRideAlert
 import io.hammerhead.karooext.models.ReleaseBluetooth
 import io.hammerhead.karooext.models.RequestBluetooth
 import io.hammerhead.karooext.models.RideProfile
+import io.hammerhead.karooext.models.RideState
+import io.hammerhead.karooext.models.WriteToRecordMesg
+import io.hammerhead.karooext.models.WriteToSessionMesg
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -154,6 +162,43 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.4") {
     }
 
     /**
+     * Writes the gear into the ride's FIT file (Karoo calls this for each recorded ride; extension_info.xml has
+     * fitFile="true"): developer field "Pinion Gear" in every record (1 Hz) while the gearbox is connected, so
+     * intervals.icu, GoldenCheetah and the like can chart it, and "Pinion Shifts", the number of gear changes, in
+     * the session. Nothing is written while the gearbox is not connected, so the file shows a gap there.
+     * Elapsed time is only the 1 s tick, as in the karoo-ext sample.
+     */
+    override fun startFit(emitter: Emitter<FitEffect>) {
+        Timber.i("Ride file: recording the gear")
+        val counter = ShiftCounter()
+        var shiftsWritten = -1
+        val gear = client.state.map { state ->
+            if (state.link == PinionLink.CONNECTED) state.gear?.takeIf { it in 1..state.gearCount } else null
+        }
+        val job = scope.launch {
+            combine(
+                karooSystem.streamDataFlow(DataType.Type.ELAPSED_TIME),
+                gear,
+                karooSystem.consumerFlow<RideState>(),
+            ) { _, gearNow, ride -> gearNow to ride }.collect { (gearNow, ride) ->
+                if (ride is RideState.Recording) {
+                    counter.update(gearNow)
+                    if (gearNow != null) emitter.onNext(WriteToRecordMesg(FieldValue(FIT_GEAR, gearNow.toDouble())))
+                }
+                // The session value is kept as last written, so write it when it changes
+                if (ride !is RideState.Idle && counter.shifts != shiftsWritten) {
+                    emitter.onNext(WriteToSessionMesg(FieldValue(FIT_SHIFTS, counter.shifts.toDouble())))
+                    shiftsWritten = counter.shifts
+                }
+            }
+        }
+        emitter.setCancellable {
+            Timber.i("Ride file: done, ${counter.shifts} shifts")
+            job.cancel()
+        }
+    }
+
+    /**
      * The battery barely moves during a ride, so it need not take a field: [LowBatteryWarning] decides when to
      * warn (once per connection at 20 % or less, once more at 10 % and at 5 % or less). A connection normally
      * lasts the ride, so in effect this is a warning at the start and more as it gets critical. Works whether or
@@ -199,5 +244,13 @@ class PinionExtensionService : KarooExtension(EXTENSION_ID, "0.1.4") {
         const val EXTENSION_ID = "pinion"
         private const val BLUETOOTH_REQUEST_INTERVAL_MS = 15_000L
         private const val DISCONNECT_ALERT_MS = 30_000L
+
+        // FIT developer fields: numbered from 0 per extension; base types from the FIT SDK (2 = uint8, 132 = uint16)
+        private val FIT_GEAR = DeveloperField(
+            fieldDefinitionNumber = 0, fitBaseTypeId = 2, fieldName = "Pinion Gear", units = "gear",
+        )
+        private val FIT_SHIFTS = DeveloperField(
+            fieldDefinitionNumber = 1, fitBaseTypeId = 132, fieldName = "Pinion Shifts", units = "shifts",
+        )
     }
 }

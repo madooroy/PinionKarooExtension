@@ -215,6 +215,13 @@ Open questions to settle on the real hardware:
   points Karoo at `releases/latest/download/manifest.json` (meta-data `io.hammerhead.karooext.MANIFEST_URL`), so the
   release must be marked Latest. Releasing from this cloud session is blocked (GitHub API refuses releases and tag
   pushes), so the author creates it on the website.
+- **Gear in the ride file** (branch `gear-in-fit`, for 0.1.5; not yet built or tried): `startFit` in the service,
+  `fitFile="true"` in extension_info.xml. Developer field 0 "Pinion Gear" (uint8) in every record while recording and
+  connected, field 1 "Pinion Shifts" (uint16, `ShiftCounter`, covered by `ShiftCounterTest`) in the session. Native
+  FIT gear-change events (event 42, rear_gear_num/rear_gear teeth) were left out: a Pinion has no sprocket teeth to
+  give, and tools that compute ratios from them would be misled. To check: record a short ride with shifts, then look
+  for both fields in the FIT (intervals.icu activity, or fitfiletools / the FIT SDK's FitCSVTool), and the log lines
+  "Ride file: recording the gear" / "Ride file: done, N shifts".
 - Ideas, not planned: a "Pinion Cadence" field from the gearbox's CSC Measurement over the existing link (no
   second connection needed; mind the count reset quirk above), for riders without a cadence sensor. Pairing the
   gearbox as a Karoo cadence sensor instead is untested, and would take the gearbox's single connection away from
@@ -226,6 +233,7 @@ Open questions to settle on the real hardware:
 
 - `PinionProtocol.kt`: UUIDs, request encoding, reply decoding. Pure Kotlin, covered by `PinionProtocolTest`.
 - `LowBatteryWarning.kt`: when to raise the low-battery alert. Pure Kotlin, covered by `LowBatteryWarningTest`.
+- `ShiftCounter.kt`: counts gear changes for the ride file. Pure Kotlin, covered by `ShiftCounterTest`.
 - `PinionBleClient.kt`: scan, connect, subscribe, poll the gear every 60 s and the battery every 5 minutes (the gear poll corrects a lost notification and logs "Gear poll"; any read also resets the gearbox's 8 minute idle switch-off; the status screen has a test button that switches the poll between gear + battery, gear only, battery only and off, kept in prefs), retry forever. Publishes `StateFlow<PinionState>`. Process-wide singleton. Runs only while the active ride profile contains a Pinion field (`ActiveRideProfile` event, handled in the service) or the status activity is open, and for 2 minutes after. Field streams are no use for this: Karoo keeps them running whatever profile is open.
 - `extension/PinionExtensionService.kt`: the `KarooExtension` service; owns the client's lifetime, requests the BT radio from Karoo, raises an in-ride alert on disconnect, and a low-battery alert once per connection at 20 % or less and again at 10 % and at 5 % or less (so the battery field can be left off a crowded page: the map page takes only four fields, 2x2, and they cannot be made half width).
 - `extension/PinionDataType.kt`: one class for both numeric fields; it only streams a value, Karoo draws the field.

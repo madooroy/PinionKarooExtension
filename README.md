@@ -162,6 +162,9 @@ Things to know:
   Bluetooth) or the Karoo will not find the gearbox.
 - **Nothing scans unless you use the fields.** The extension only looks for the gearbox while the active
   ride profile has a Pinion field on one of its pages, so other profiles cost no battery.
+- **The gear goes into your ride file.** While a ride is recording, the gear is saved every second as an extra
+  field, "Pinion Gear", and the number of shifts as "Pinion Shifts". Sites that read extra FIT fields, such as
+  intervals.icu, can chart them afterwards; Strava ignores them. Seconds without a connection are left empty.
 - The *Pinion Smart.Shift* app on the Karoo shows the connection status, gear and battery, which helps
   when something does not connect.
 
