@@ -97,7 +97,8 @@ Not yet tried by the author, who rides a Karoo 2: please open an issue to say wh
 4. **Open *Pinion Smart.Shift* on the Karoo once** and allow the permission it asks for.
 
 5. **Add the fields.** Edit a ride profile on the Karoo, add a data field and pick **Pinion Gear** (and
-   **Pinion Battery**, if you want it) from the *Pinion Smart.Shift* section.
+   **Pinion Battery**, if you want it) from the *Pinion Smart.Shift* section. Short of room, as on the map page?
+   Pick **3s Cad + Gear** instead, which puts cadence and gear in one field.
 
    > **Not the Karoo's own gear fields.** The Karoo's built-in *Front Gear*, *Rear Gear* and other gear or
    > shifting fields are for Shimano Di2 and SRAM AXS. With a Pinion they stay empty. The right fields are the
