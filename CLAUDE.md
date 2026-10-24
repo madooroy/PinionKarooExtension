@@ -237,7 +237,8 @@ Karoo facts that shaped the code (the layout ones found on a Karoo 2, 2026-10-07
   while disconnected. The in-ride alert carries the "hold the button" instruction instead.
 - **The split field "3s Cad + Gear"** (`cadence_gear`, graphical, 0.1.4; profile-editor preview checked on the
   Karoo 2 2026-10-23 in a 2x2 map page beside native 3s Speed, 3s Power and HR: labels match native size and
-  placement, values in the Karoo font slightly smaller than full-cell ones, as expected; live ride values not yet) gets round all
+  placement, values in the Karoo font slightly smaller than full-cell ones, as expected; on the ride page with no cadence
+  sensor and no gearbox both halves show a grey dash beside native "Searching..." / "No Sensor"; live values not yet) gets round all
   of that the way Barberfish does (<https://github.com/jpweytjens/Barberfish>, docs/sdk-findings.md and
   architecture.md, tested on Karoo 2 firmware 1.613.2351.12): `showHeader = false`, and the whole cell, labels
   included, drawn into one bitmap set on a single ImageView (`res/layout/split_field.xml`), so no RemoteViews
