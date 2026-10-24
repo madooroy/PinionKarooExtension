@@ -196,8 +196,10 @@ Open questions to settle on the real hardware:
   live values in all five pairs (Batt + Gear: preview 88 / 7 and the no-gearbox dashes checked on the Karoo 2
   2026-10-23 on a 2x5 data page, label "BATT %" fits beside "GEAR"); 3s Spd + Gear against the native 3s Speed beside it (speed is taken as m/s and
   converted with the profile's distance unit); zone colours against native power and HR fields in zone colour mode.
-  The colour table is Barberfish's and may be a Karoo 3 one: the Karoo 2 profile editor painted its sample power
-  field #60EEB2 and HR field #00B988, which are not in it, so calibrate from a ride screenshot. Zone fills cover the
+  Colour table (2026-10-24): karoo-powerbar's (timklge/karoo-powerbar, colors.xml, unchanged since Dec 2024),
+  power 1-7 #00B988 #60EEB2 #FFF500 #FB8C65 #FE581F #D60404 #B700A2, HR 1-5 the power zones 1, 2, 3, 4, 6. It
+  holds both colours the Karoo 2 profile editor painted its own sample fields with (power #60EEB2, HR #00B988);
+  Barberfish's "Karoo" table, used before, held neither. Zones 3-7 are taken on trust; check if a ride reaches them. Zone fills cover the
   partner half only, rounded on the outer corners, and replace the divider.
   Profile-editor previews of all four checked on the Karoo 2 2026-10-23 (a 2x2 map page of the four split fields):
   speed sample 9.33 m/s shown as 20.9, so the imperial unit is picked up; 187 W and 132 bpm both fell in the

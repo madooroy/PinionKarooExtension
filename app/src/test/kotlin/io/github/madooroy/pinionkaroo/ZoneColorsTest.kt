@@ -26,6 +26,12 @@ class ZoneColorsTest {
     }
 
     @Test
+    fun paletteHoldsTheColoursTheKaroo2PaintsItsOwnFieldsWith() {
+        assertEquals(0xFF00B988.toInt(), ZoneColors.HEART_RATE[0])
+        assertEquals(0xFF60EEB2.toInt(), ZoneColors.POWER[1])
+    }
+
+    @Test
     fun textIsBlackOnLightFillsAndWhiteOnDarkOnes() {
         val black = 0xFF000000.toInt()
         val white = 0xFFFFFFFF.toInt()

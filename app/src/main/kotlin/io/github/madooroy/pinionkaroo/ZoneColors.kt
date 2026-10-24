@@ -2,23 +2,25 @@ package io.github.madooroy.pinionkaroo
 
 /**
  * Zone colours for the power and heart rate halves of the split fields, as Karoo paints its own fields in
- * "zone colour" mode. The table is Barberfish's measurement of the Karoo palette
- * (github.com/jpweytjens/Barberfish, ZoneColoring.kt, Apache 2.0); it may have been taken on a Karoo 3, so it is
- * to be checked against native fields on a Karoo 2. Pure Kotlin (colours as ARGB ints) so it can be unit tested.
+ * "zone colour" mode. The table is karoo-powerbar's (github.com/timklge/karoo-powerbar, res/values/colors.xml,
+ * Apache 2.0), which holds exactly the two colours a Karoo 2 was seen to paint its own fields with in the profile
+ * editor (2026-10-23): #60EEB2 for a power field in zone 2 and #00B988 for a heart rate field. Barberfish's table,
+ * used before, has neither. Zones 3-7 are not yet checked against a native field. Pure Kotlin (colours as ARGB
+ * ints) so it can be unit tested.
  */
 object ZoneColors {
     /** Power zones 1-7, low to high */
     val POWER = intArrayOf(
-        0xFF1A8C3A.toInt(), // 1 active recovery, dark green
-        0xFF40D078.toInt(), // 2 endurance, mint green
-        0xFFF0D800.toInt(), // 3 tempo, yellow
-        0xFFF08868.toInt(), // 4 threshold, salmon
-        0xFFF06020.toInt(), // 5 VO2 max, orange
-        0xFFD01020.toInt(), // 6 anaerobic, red
-        0xFF9020A0.toInt(), // 7 neuromuscular, purple
+        0xFF00B988.toInt(), // 1 active recovery, green
+        0xFF60EEB2.toInt(), // 2 endurance, mint
+        0xFFFFF500.toInt(), // 3 tempo, yellow
+        0xFFFB8C65.toInt(), // 4 threshold, salmon
+        0xFFFE581F.toInt(), // 5 VO2 max, orange
+        0xFFD60404.toInt(), // 6 anaerobic, red
+        0xFFB700A2.toInt(), // 7 neuromuscular, purple
     )
 
-    /** Heart rate zones 1-5: Karoo uses power zones 1, 2, 3, 4 and 6 */
+    /** Heart rate zones 1-5: power zones 1, 2, 3, 4 and 6 (karoo-powerbar's five-zone mapping) */
     val HEART_RATE = intArrayOf(POWER[0], POWER[1], POWER[2], POWER[3], POWER[5])
 
     /**
