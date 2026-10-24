@@ -5,8 +5,8 @@
   "latestVersion": "0.1.4",
   "latestVersionCode": 5,
   "developer": "madooroy",
-  "description": "Shows the current gear and battery level of a Pinion Smart.Shift gearbox as Karoo data fields, plus split fields pairing the gear with 3s cadence, 3s power, heart rate or 3s speed, with a low-battery alert at 20, 10 and 5 %. Unofficial: not affiliated with Pinion or Hammerhead. Built on Tim Angus's reverse engineering of the Smart.Shift Bluetooth protocol.",
-  "releaseNotes": "New split fields that put the Pinion gear beside a Karoo value in one cell: 3s Cad + Gear, 3s Pwr + Gear, HR + Gear and 3s Spd + Gear (power and heart rate in zone colours), so a 2x2 page can show five values.",
+  "description": "Shows the current gear and battery level of a Pinion Smart.Shift gearbox as Karoo data fields, plus split fields pairing the gear with 3s cadence, 3s power, heart rate, 3s speed or the gearbox battery, with a low-battery alert at 20, 10 and 5 %. Unofficial: not affiliated with Pinion or Hammerhead. Built on Tim Angus's reverse engineering of the Smart.Shift Bluetooth protocol.",
+  "releaseNotes": "New split fields that put the Pinion gear beside another value in one cell: 3s Cad + Gear, 3s Pwr + Gear, HR + Gear, 3s Spd + Gear (power and heart rate in zone colours) and Batt + Gear, so a 2x2 page can show five values.",
   "screenshotUrls": [
     "https://raw.githubusercontent.com/madooroy/PinionKarooExtension/main/docs/fields.png"
   ],

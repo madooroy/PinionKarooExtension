@@ -227,10 +227,11 @@ Open questions to settle on the real hardware:
 - `extension/PinionExtensionService.kt`: the `KarooExtension` service; owns the client's lifetime, requests the BT radio from Karoo, raises an in-ride alert on disconnect, and a low-battery alert once per connection at 20 % or less and again at 10 % and at 5 % or less (so the battery field can be left off a crowded page: the map page takes only four fields, 2x2, and they cannot be made half width).
 - `extension/PinionDataType.kt`: one class for both numeric fields; it only streams a value, Karoo draws the field.
 - `extension/SplitGearDataType.kt` (one class, `SplitPartner` enum) + `SplitFieldRenderer.kt`: the drawn split fields
-  "3s Cad + Gear", "3s Pwr + Gear", "HR + Gear", "3s Spd + Gear" (gear always the right half).
+  "3s Cad + Gear", "3s Pwr + Gear", "HR + Gear", "3s Spd + Gear", "Batt + Gear" (gear always the right half;
+  the battery half reads our own client state, shown only while connected, cut off like the battery field).
 - `ZoneColors.kt`: zone index and Karoo zone colours for the split fields. Pure Kotlin, covered by `ZoneColorsTest`.
 - `MainActivity.kt`: requests Bluetooth/location runtime permissions, shows live status, "Forget gearbox".
-- `res/xml/extension_info.xml`: extension id `pinion`, type ids `gear`, `battery`, `cadence_gear`, `power_gear`, `hr_gear`, `speed_gear`. These must match the Kotlin constants.
+- `res/xml/extension_info.xml`: extension id `pinion`, type ids `gear`, `battery`, `cadence_gear`, `power_gear`, `hr_gear`, `speed_gear`, `battery_gear`. These must match the Kotlin constants.
 
 Karoo facts that shaped the code (the layout ones found on a Karoo 2, 2026-10-07):
 - The manifest action is `io.hammerhead.karooext.KAROO_EXTENSION`.

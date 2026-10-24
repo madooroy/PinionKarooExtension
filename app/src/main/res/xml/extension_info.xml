@@ -39,4 +39,10 @@
         graphical="true"
         icon="@drawable/ic_pinion"
         typeId="speed_gear" />
+    <DataType
+        description="@string/battery_gear_description"
+        displayName="@string/battery_gear"
+        graphical="true"
+        icon="@drawable/ic_pinion"
+        typeId="battery_gear" />
 </ExtensionInfo>

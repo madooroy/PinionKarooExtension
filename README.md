@@ -11,7 +11,8 @@ to the gearbox over Bluetooth and adds two data fields you can put on any ride p
 - **Pinion Gear** - the gear you are in (1 to 12, or as many as your gearbox has);
 - **Pinion Battery** - the Smart.Shift battery level in percent;
 - **Split fields** - one cell split in two, a Karoo value on the left and the Pinion gear on the right:
-  **3s Cad + Gear**, **3s Pwr + Gear**, **HR + Gear** and **3s Spd + Gear**. Power and heart rate are filled
+  **3s Cad + Gear**, **3s Pwr + Gear**, **HR + Gear**, **3s Spd + Gear** and **Batt + Gear** (the Smart.Shift
+  battery). Power and heart rate are filled
   with your zone colour, like the Karoo's own fields. Handy on the map page, which has only four fields: speed,
   power, heart rate and 3s Cad + Gear fit five values.
 
@@ -100,7 +101,8 @@ Not yet tried by the author, who rides a Karoo 2: please open an issue to say wh
 
 5. **Add the fields.** Edit a ride profile on the Karoo, add a data field and pick **Pinion Gear** (and
    **Pinion Battery**, if you want it) from the *Pinion Smart.Shift* section. Short of room, as on the map page?
-   Pick one of the split fields instead (**3s Cad + Gear**, **3s Pwr + Gear**, **HR + Gear**, **3s Spd + Gear**),
+   Pick one of the split fields instead (**3s Cad + Gear**, **3s Pwr + Gear**, **HR + Gear**, **3s Spd + Gear**,
+   **Batt + Gear**),
    which put the gear beside another value in one field.
 
    > **Not the Karoo's own gear fields.** The Karoo's built-in *Front Gear*, *Rear Gear* and other gear or

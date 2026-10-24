@@ -14,6 +14,9 @@
     <string name="split_power_label">3s Pwr</string>
     <string name="split_hr_label">HR</string>
     <string name="split_speed_label">3s Spd</string>
+    <string name="split_battery_label">Batt %</string>
+    <string name="battery_gear">Batt + Gear</string>
+    <string name="battery_gear_description">Smart.Shift battery level (%) and the Pinion gear side by side in one field</string>
     <string name="power_gear">3s Pwr + Gear</string>
     <string name="power_gear_description">3 second power, in zone colours, and the Pinion gear side by side in one field</string>
     <string name="hr_gear">HR + Gear</string>

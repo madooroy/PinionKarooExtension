@@ -36,7 +36,8 @@ import kotlin.math.roundToInt
 enum class SplitPartner(
     /** Must match a `typeId` in res/xml/extension_info.xml */
     val typeId: String,
-    val karooType: String,
+    /** The Karoo stream for the left half, or null for one of our own values (the gearbox battery) */
+    val karooType: String?,
     val label: Int,
     /** Zone colours for this value, or null for none */
     val zonePalette: IntArray?,
@@ -47,10 +48,12 @@ enum class SplitPartner(
     POWER("power_gear", DataType.Type.SMOOTHED_3S_AVERAGE_POWER, R.string.split_power_label, ZoneColors.POWER, 187.0),
     HEART_RATE("hr_gear", DataType.Type.HEART_RATE, R.string.split_hr_label, ZoneColors.HEART_RATE, 132.0),
     SPEED("speed_gear", DataType.Type.SMOOTHED_3S_AVERAGE_SPEED, R.string.split_speed_label, null, 9.33),
+    BATTERY("battery_gear", null, R.string.split_battery_label, null, 88.0),
 }
 
 /**
- * A field split in two: a Karoo value on the left ([partner]: 3s cadence, 3s power, heart rate or 3s speed) and
+ * A field split in two: a value on the left ([partner]: 3s cadence, 3s power, heart rate, 3s speed or the
+ * gearbox battery) and
  * the Pinion gear on the right, so a 2x2 map page can carry five values. A graphical field: the whole cell is
  * drawn by [SplitFieldRenderer] (showHeader = false). Power and heart rate get the rider's zone colour as the
  * fill of their half, like Karoo's own fields in zone colour mode.
@@ -73,12 +76,15 @@ class SplitGearDataType(
         onViewStarted()
 
         // In the profile editor show sample values, as the Karoo does with its 42
-        val partnerValue: Flow<Double?> = if (config.preview) {
-            flowOf(partner.sample)
-        } else {
-            karooSystem.streamDataFlow(partner.karooType)
-                .map { state -> (state as? StreamState.Streaming)?.dataPoint?.singleValue }
-                .onStart { emit(null) }
+        val karooType = partner.karooType
+        val partnerValue: Flow<Double?> = when {
+            config.preview -> flowOf(partner.sample)
+            karooType != null ->
+                karooSystem.streamDataFlow(karooType)
+                    .map { state -> (state as? StreamState.Streaming)?.dataPoint?.singleValue }
+                    .onStart { emit(null) }
+            // The gearbox battery, shown like the gear: only while connected
+            else -> client.state.map { state -> if (state.link == PinionLink.CONNECTED) state.batteryPercent else null }
         }
         val gear: Flow<Int?> = if (config.preview) {
             flowOf(SAMPLE_GEAR)
@@ -146,6 +152,8 @@ class SplitGearDataType(
             val imperial = profile?.preferredUnit?.distance == UserProfile.PreferredUnit.UnitType.IMPERIAL
             String.format(Locale.US, "%.1f", value * if (imperial) MPS_TO_MPH else MPS_TO_KMH)
         }
+        // Cut off rather than rounded, like Karoo's own battery field (86.54 shows as 86)
+        SplitPartner.BATTERY -> value.toInt().toString()
         else -> value.roundToInt().toString()
     }
 
