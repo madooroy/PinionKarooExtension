@@ -215,6 +215,8 @@ Open questions to settle on the real hardware:
   points Karoo at `releases/latest/download/manifest.json` (meta-data `io.hammerhead.karooext.MANIFEST_URL`), so the
   release must be marked Latest. Releasing from this cloud session is blocked (GitHub API refuses releases and tag
   pushes), so the author creates it on the website.
+- Branch `gear-in-fit` (0.1.5, not yet built or tried): gear and shift count written to the ride FIT file;
+  merge into main after 0.1.4 is released. Its CLAUDE.md has the details.
 - Ideas, not planned: a "Pinion Cadence" field from the gearbox's CSC Measurement over the existing link (no
   second connection needed; mind the count reset quirk above), for riders without a cadence sensor. Pairing the
   gearbox as a Karoo cadence sensor instead is untested, and would take the gearbox's single connection away from
