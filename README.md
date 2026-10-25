@@ -70,7 +70,8 @@ gearbox settings.
 If you try it on a real Smart.Shift gearbox, please open an issue and say how it went, whether it worked
 or not. The things only real hardware can answer are listed in [CLAUDE.md](CLAUDE.md).
 
-The Karoo 3 is supported in the code (Android 13 permissions) but untested.
+Karoo 3: a rider reports it working perfectly on a Karoo 3 with a Priority Gemini
+([issue #2](https://github.com/madooroy/PinionKarooExtension/issues/2)). The author tests on a Karoo 2.
 
 ## What you need
 

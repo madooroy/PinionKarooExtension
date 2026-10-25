@@ -91,6 +91,14 @@ Smart.Shift (Priority Gemini), bike stationary.
   should deliver the Karoo FIT (not checked for the Karoo 2). While
   auto-paused the 3s power and cadence halves showed a dash where native 3s Power showed 0: the stream is `Idle`
   then (sensor connected but silent), now shown as 0 except for heart rate. No link drop in the session.
+- **First Karoo 3 report** (issue #2, JohnMc-76, 2026-10-24): "works perfectly" on a Priority Gemini with a Karoo 3
+  (version not stated, so 0.1.3 or earlier); shared in the Priority Owners Club group on Strava. The awesome-karoo
+  entry still says "Karoo 3 supported but untested": correct it in the next pull request there.
+- Pull request #1 (nikosavola, 2026-10-12, open): a Robolectric suite on his karoo-ext-testing library (JitPack,
+  test-only). Reviewed 2026-10-25, not merged: based on the 2026-10-07 code (asserts the old 10 s disconnect alert,
+  predates the poll modes, low-power scan and split fields), runs at Android 14 rather than the Karoo 2's 8.1, reaches
+  into PinionBleClient's private `instance`/`scope` by reflection, and would add a one-star JitPack dependency that
+  runs on the author's laptop with every release build.
 - Not yet checked on real hardware: an outdoor ride.
 
 Pairing mode, per Pinion's app FAQ
