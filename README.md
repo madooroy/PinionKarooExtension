@@ -119,6 +119,11 @@ Not yet tried by the author, who rides a Karoo 2: please open an issue to say wh
    **Batt + Gear**),
    which put the gear beside another value in one field, or **Shifts + Avg Gear** for the ride's totals.
 
+   <img src="docs/add-fields.png" width="480" alt="The Karoo's Select Data list with the Pinion Smart.Shift section and all eight Pinion fields">
+
+   *The Pinion Smart.Shift section of the field list. The 42 is the Karoo's own placeholder for every numeric
+   field; on a ride the field shows your gear.*
+
    > **Not the Karoo's own gear fields.** The Karoo's built-in *Front Gear*, *Rear Gear* and other gear or
    > shifting fields are for Shimano Di2 and SRAM AXS. With a Pinion they stay empty. The right fields are the
    > ones named **PINION GEAR** and **PINION BATTERY**, listed under *Pinion Smart.Shift*.
