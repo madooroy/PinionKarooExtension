@@ -81,7 +81,15 @@ class SplitGearDataType(
             config.preview -> flowOf(partner.sample)
             karooType != null ->
                 karooSystem.streamDataFlow(karooType)
-                    .map { state -> (state as? StreamState.Streaming)?.dataPoint?.singleValue }
+                    .map { state ->
+                        when (state) {
+                            is StreamState.Streaming -> state.dataPoint.singleValue
+                            // Sensor connected but silent (stopped, auto-paused): Karoo's own field shows 0 then
+                            // (3s power, 2026-10-25), so do the same, except for heart rate, where 0 means nothing
+                            StreamState.Idle -> if (partner == SplitPartner.HEART_RATE) null else 0.0
+                            else -> null
+                        }
+                    }
                     .onStart { emit(null) }
             // The gearbox battery, shown like the gear: only while connected
             else -> client.state.map { state -> if (state.link == PinionLink.CONNECTED) state.batteryPercent else null }
