@@ -85,7 +85,10 @@ Smart.Shift (Priority Gemini), bike stationary.
   "Ride started", startFit/stopFit and "Ride file: done" logged, no errors. The FIT (from the Hammerhead
   dashboard; adb finds no .fit under /sdcard) holds "Pinion Gear" in all 1811 records (42 changes, mean 6.436) and
   "Pinion Shifts" 42 / "Pinion Avg Gear" 6.4 in the session, as developer data index 2 (Karoo's own fields, such as
-  front_gear/rear_gear, are index 1). intervals.icu did not show the stream at first. While
+  front_gear/rear_gear, are index 1). intervals.icu did not show the stream at first: the
+  ride had come through Strava, which drops developer fields; the FIT uploaded by hand showed "Pinion Gear" (custom
+  activity stream, record field `Pinion Gear`, units gear, format .0f). Hammerhead's own intervals.icu connection
+  should deliver the Karoo FIT (not checked for the Karoo 2). While
   auto-paused the 3s power and cadence halves showed a dash where native 3s Power showed 0: the stream is `Idle`
   then (sensor connected but silent), now shown as 0 except for heart rate. No link drop in the session.
 - Not yet checked on real hardware: an outdoor ride.
@@ -204,7 +207,7 @@ Open questions to settle on the real hardware:
   rear 3 s") fitted without cutting and stayed up about 30 s.
 - Repository renamed 2026-10-23 to `madooroy/PinionKarooExtension` (GitHub redirects the old name); 0.1.3's
   manifest links use the new name. The APK keeps the file name `pinion-karoo-extension-<version>.apk`.
-- Version 0.1.4 in progress (split fields): versionCode 5, all three places bumped. Still to check on the Karoo:
+- Version 0.1.4 in progress (split fields, Shifts + Avg Gear, gear in the ride file): versionCode 5, all three places bumped. Still to check on the Karoo:
   live values in all five pairs (all seen live 2026-10-25, see the rollers session; Batt + Gear: preview 88 / 7 and the no-gearbox dashes checked on the Karoo 2
   2026-10-23 on a 2x5 data page, label "BATT %" fits beside "GEAR"); 3s Spd + Gear against the native 3s Speed beside it (speed is taken as m/s and
   converted with the profile's distance unit); zone colours against native power and HR fields in zone colour mode.
@@ -228,8 +231,21 @@ Open questions to settle on the real hardware:
   points Karoo at `releases/latest/download/manifest.json` (meta-data `io.hammerhead.karooext.MANIFEST_URL`), so the
   release must be marked Latest. Releasing from this cloud session is blocked (GitHub API refuses releases and tag
   pushes), so the author creates it on the website.
-- Branch `gear-in-fit` (0.1.5, not yet built or tried): gear and shift count written to the ride FIT file;
-  merge into main after 0.1.4 is released. Its CLAUDE.md has the details.
+- **Gear in the ride file** (0.1.4; branch `gear-in-fit`, merged into main 2026-10-25; built and ridden 2026-10-25, FIT
+  checked: see the rollers session): `startFit` in the service,
+  `fitFile="true"` in extension_info.xml. Developer field 0 "Pinion Gear" (uint8) in every record while recording and
+  connected; in the session field 1 "Pinion Shifts" (uint16) and field 2 "Pinion Avg Gear" (float32, 0.1 steps),
+  both from the service's `rideStats` (`RideGearStats` + `ShiftCounter`, covered by their tests), written when
+  they change. The same `rideStats` feeds the split field "Shifts + Avg Gear" (`shifts_avg_gear`,
+  `RideGearDataType`, preview 143 / 6.4; first preview on the Karoo 2, 2026-10-24: "SHIFTS" and "AVG GEAR" ran into
+  each other, so a label too wide for its half now wraps at a space onto two lines, as native headers do). `trackRide()` in the service: new stats when the ride leaves Idle,
+  shifts counted while running or paused, the gear sampled each second while Recording (with the gearbox
+  connected) for the average; the last ride's values stay shown until the next ride. Lost if the extension
+  restarts mid-ride (counts start again). Native
+  FIT gear-change events (event 42, rear_gear_num/rear_gear teeth) were left out: a Pinion has no sprocket teeth to
+  give, and tools that compute ratios from them would be misled. To check: record a short ride with shifts, then look
+  for both fields in the FIT (intervals.icu activity, or fitfiletools / the FIT SDK's FitCSVTool), and the log lines
+  "Ride started: counting shifts", "Ride ended: Summary(...)", "Ride file: done, ...".
 - Ideas, not planned: a "Pinion Cadence" field from the gearbox's CSC Measurement over the existing link (no
   second connection needed; mind the count reset quirk above), for riders without a cadence sensor. Pairing the
   gearbox as a Karoo cadence sensor instead is untested, and would take the gearbox's single connection away from
@@ -241,15 +257,18 @@ Open questions to settle on the real hardware:
 
 - `PinionProtocol.kt`: UUIDs, request encoding, reply decoding. Pure Kotlin, covered by `PinionProtocolTest`.
 - `LowBatteryWarning.kt`: when to raise the low-battery alert. Pure Kotlin, covered by `LowBatteryWarningTest`.
+- `RideGearStats.kt`: shifts and average gear of a ride. Pure Kotlin, covered by `RideGearStatsTest`.
+- `ShiftCounter.kt`: counts gear changes for the ride file. Pure Kotlin, covered by `ShiftCounterTest`.
 - `PinionBleClient.kt`: scan, connect, subscribe, poll the gear every 60 s and the battery every 5 minutes (the gear poll corrects a lost notification and logs "Gear poll"; any read also resets the gearbox's 8 minute idle switch-off; the status screen has a test button that switches the poll between gear + battery, gear only, battery only and off, kept in prefs), retry forever. Publishes `StateFlow<PinionState>`. Process-wide singleton. Runs only while the active ride profile contains a Pinion field (`ActiveRideProfile` event, handled in the service) or the status activity is open, and for 2 minutes after. Field streams are no use for this: Karoo keeps them running whatever profile is open.
 - `extension/PinionExtensionService.kt`: the `KarooExtension` service; owns the client's lifetime, requests the BT radio from Karoo, raises an in-ride alert on disconnect, and a low-battery alert once per connection at 20 % or less and again at 10 % and at 5 % or less (so the battery field can be left off a crowded page: the map page takes only four fields, 2x2, and they cannot be made half width).
 - `extension/PinionDataType.kt`: one class for both numeric fields; it only streams a value, Karoo draws the field.
 - `extension/SplitGearDataType.kt` (one class, `SplitPartner` enum) + `SplitFieldRenderer.kt`: the drawn split fields
   "3s Cad + Gear", "3s Pwr + Gear", "HR + Gear", "3s Spd + Gear", "Batt + Gear" (gear always the right half;
   the battery half reads our own client state, shown only while connected, cut off like the battery field).
+- `extension/RideGearDataType.kt`: the split field "Shifts + Avg Gear", from the service's `rideStats`.
 - `ZoneColors.kt`: zone index and Karoo zone colours for the split fields. Pure Kotlin, covered by `ZoneColorsTest`.
 - `MainActivity.kt`: requests Bluetooth/location runtime permissions, shows live status, "Forget gearbox".
-- `res/xml/extension_info.xml`: extension id `pinion`, type ids `gear`, `battery`, `cadence_gear`, `power_gear`, `hr_gear`, `speed_gear`, `battery_gear`. These must match the Kotlin constants.
+- `res/xml/extension_info.xml`: extension id `pinion`, type ids `gear`, `battery`, `cadence_gear`, `power_gear`, `hr_gear`, `speed_gear`, `battery_gear`, `shifts_avg_gear`. These must match the Kotlin constants.
 
 Karoo facts that shaped the code (the layout ones found on a Karoo 2, 2026-10-07):
 - The manifest action is `io.hammerhead.karooext.KAROO_EXTENSION`.

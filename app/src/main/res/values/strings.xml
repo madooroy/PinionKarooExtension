@@ -15,6 +15,10 @@
     <string name="split_hr_label">HR</string>
     <string name="split_speed_label">3s Spd</string>
     <string name="split_battery_label">Batt %</string>
+    <string name="split_shifts_label">Shifts</string>
+    <string name="split_avg_gear_label">Avg Gear</string>
+    <string name="shifts_avg_gear">Shifts + Avg Gear</string>
+    <string name="shifts_avg_gear_description">Number of shifts and average gear of the ride side by side in one field</string>
     <string name="battery_gear">Batt + Gear</string>
     <string name="battery_gear_description">Smart.Shift battery level (%) and the Pinion gear side by side in one field</string>
     <string name="power_gear">3s Pwr + Gear</string>

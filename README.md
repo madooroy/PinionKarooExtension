@@ -13,7 +13,8 @@ to the gearbox over Bluetooth and adds two data fields you can put on any ride p
 - **Split fields** - one cell split in two, a Karoo value on the left and the Pinion gear on the right:
   **3s Cad + Gear**, **3s Pwr + Gear**, **HR + Gear**, **3s Spd + Gear** and **Batt + Gear** (the Smart.Shift
   battery). Power and heart rate are filled
-  with your zone colour, like the Karoo's own fields. Handy on the map page, which has only four fields: speed,
+  with your zone colour, like the Karoo's own fields. **Shifts + Avg Gear** shows the ride's shift count and
+  average gear. Handy on the map page, which has only four fields: speed,
   power, heart rate and 3s Cad + Gear fit five values.
 
 They are ordinary Karoo fields, so they look and behave like the built-in ones.
@@ -103,7 +104,7 @@ Not yet tried by the author, who rides a Karoo 2: please open an issue to say wh
    **Pinion Battery**, if you want it) from the *Pinion Smart.Shift* section. Short of room, as on the map page?
    Pick one of the split fields instead (**3s Cad + Gear**, **3s Pwr + Gear**, **HR + Gear**, **3s Spd + Gear**,
    **Batt + Gear**),
-   which put the gear beside another value in one field.
+   which put the gear beside another value in one field, or **Shifts + Avg Gear** for the ride's totals.
 
    > **Not the Karoo's own gear fields.** The Karoo's built-in *Front Gear*, *Rear Gear* and other gear or
    > shifting fields are for Shimano Di2 and SRAM AXS. With a Pinion they stay empty. The right fields are the
@@ -162,6 +163,16 @@ Things to know:
   Bluetooth) or the Karoo will not find the gearbox.
 - **Nothing scans unless you use the fields.** The extension only looks for the gearbox while the active
   ride profile has a Pinion field on one of its pages, so other profiles cost no battery.
+- **The gear goes into your ride file.** While a ride is recording, the gear is saved every second as an extra
+  field, "Pinion Gear", and the number of shifts and the average gear as "Pinion Shifts" and "Pinion Avg Gear". Sites that read extra FIT fields, such as
+  intervals.icu, can chart them afterwards. Seconds without a connection are left empty. Strava drops these
+  fields, so a ride that reaches intervals.icu through Strava has no gear: connect intervals.icu to your Hammerhead
+  account (dashboard.hammerhead.io) so it gets the Karoo's own file, or upload the FIT from the dashboard. In
+  intervals.icu add the gear once as a custom activity stream (Charts, Custom Streams, Add Stream) with the
+  record field `Pinion Gear`.
+- **Shifts + Avg Gear** shows the ride's shift count and its average gear while you ride. Counting starts with
+  each new ride; shifts made while the ride is paused count, and the average only takes the seconds the ride is
+  recording. After the ride the field keeps the totals until the next one starts.
 - The *Pinion Smart.Shift* app on the Karoo shows the connection status, gear and battery, which helps
   when something does not connect.
 
