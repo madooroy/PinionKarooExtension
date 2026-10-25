@@ -8,6 +8,8 @@
   "description": "Shows the current gear and battery level of a Pinion Smart.Shift gearbox as Karoo data fields, plus split fields pairing the gear with 3s cadence, 3s power, heart rate, 3s speed or the gearbox battery, a Shifts + Avg Gear field, the gear saved in the ride file, and a low-battery alert at 20, 10 and 5 %. Unofficial: not affiliated with Pinion or Hammerhead. Built on Tim Angus's reverse engineering of the Smart.Shift Bluetooth protocol.",
   "releaseNotes": "Split fields that put the Pinion gear beside another value in one cell: 3s Cad + Gear, 3s Pwr + Gear, HR + Gear, 3s Spd + Gear (power and heart rate in Karoo zone colours) and Batt + Gear. New Shifts + Avg Gear field for the ride. The gear, shift count and average gear are saved in the ride file (shown by intervals.icu when the ride reaches it from Hammerhead, not via Strava).",
   "screenshotUrls": [
+    "https://raw.githubusercontent.com/madooroy/PinionKarooExtension/main/docs/ride-all-fields.png",
+    "https://raw.githubusercontent.com/madooroy/PinionKarooExtension/main/docs/ride-compact.png",
     "https://raw.githubusercontent.com/madooroy/PinionKarooExtension/main/docs/fields.png"
   ],
   "tags": [

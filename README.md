@@ -19,6 +19,19 @@ to the gearbox over Bluetooth and adds two data fields you can put on any ride p
 
 They are ordinary Karoo fields, so they look and behave like the built-in ones.
 
+<table>
+  <tr>
+    <td align="center"><img src="docs/ride-all-fields.png" width="240" alt="A Karoo 2 ride page with all eight Pinion fields during a ride"></td>
+    <td align="center"><img src="docs/ride-compact.png" width="240" alt="A ride page with 3s Cad + Gear and Shifts + Avg Gear under zone-coloured power and heart rate"></td>
+    <td align="center"><img src="docs/intervals-gear.png" width="240" alt="intervals.icu chart of the ride with the Pinion Gear stream under power and heart rate"></td>
+  </tr>
+  <tr>
+    <td align="center">All eight Pinion fields mid-ride (Karoo 2)</td>
+    <td align="center">Split fields on a compact ride page</td>
+    <td align="center">The gear from the ride file in intervals.icu</td>
+  </tr>
+</table>
+
 You don't need the battery field to keep an eye on the battery: when it is at 20 % or less the Karoo shows
 an alert after connecting, and another one at 10 % and at 5 % during the ride (the levels at which the
 Smart.Shift box itself flashes its LED yellow and red after a shift, and starts beeping). So on a crowded page (the map
