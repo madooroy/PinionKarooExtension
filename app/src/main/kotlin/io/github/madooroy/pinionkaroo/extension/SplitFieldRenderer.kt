@@ -76,10 +76,32 @@ object SplitFieldRenderer {
         labelPaint.getTextBounds("CAD", 0, 3, labelBounds)
         val headerHeight = labelPaint.textSize * 2f
         val labelBaseline = (headerHeight + labelBounds.height()) / 2f
-        labelPaint.color = textColor(left)
-        canvas.drawText(left.label.uppercase(), half - pad, labelBaseline, labelPaint)
-        labelPaint.color = textColor(right)
-        canvas.drawText(right.label.uppercase(), width - pad, labelBaseline, labelPaint)
+        // A label too wide for its half wraps onto two lines at a space, as Karoo's own headers do
+        // ("AVG / CADENCE"); a line still too wide is drawn smaller. Returns the lowest baseline used.
+        val labelWidth = half - 2f * pad
+        fun drawLabel(label: String, rightEdge: Float, color: Int): Float {
+            labelPaint.color = color
+            val text = label.uppercase()
+            if (labelPaint.measureText(text) <= labelWidth || ' ' !in text) {
+                drawFitted(canvas, labelPaint, text, rightEdge, labelBaseline, labelWidth)
+                return labelBaseline
+            }
+            // Split at the space that leaves the longer line shortest
+            val lines = text.indices.filter { text[it] == ' ' }
+                .map { text.substring(0, it).trim() to text.substring(it + 1).trim() }
+                .minByOrNull { (a, b) -> maxOf(labelPaint.measureText(a), labelPaint.measureText(b)) }!!
+            val cap = labelBounds.height().toFloat()
+            val gap = labelPaint.textSize * 0.3f
+            val first = (headerHeight - (2f * cap + gap)) / 2f + cap
+            val second = first + cap + gap
+            drawFitted(canvas, labelPaint, lines.first, rightEdge, first, labelWidth)
+            drawFitted(canvas, labelPaint, lines.second, rightEdge, second, labelWidth)
+            return second
+        }
+        val labelBottom = maxOf(
+            drawLabel(left.label, half - pad, textColor(left)),
+            drawLabel(right.label, width - pad, textColor(right)),
+        )
 
         // Values: one size for both halves, so the two numbers line up. Fit the digit height to the band
         // below the header, then shrink if the wider value (at least two digits, so the size does not jump
@@ -132,7 +154,16 @@ object SplitFieldRenderer {
             color = divider
             strokeWidth = density.coerceAtLeast(1f)
         }
-        canvas.drawLine(half, labelBaseline + pad, half, height - 4f * density, dividerPaint)
+        canvas.drawLine(half, labelBottom + pad, half, height - 4f * density, dividerPaint)
         return bitmap
+    }
+
+    /** Draws [text] right-aligned at [rightEdge], scaled down for this line only if wider than [maxWidth] */
+    private fun drawFitted(canvas: Canvas, paint: Paint, text: String, rightEdge: Float, baseline: Float, maxWidth: Float) {
+        val size = paint.textSize
+        val width = paint.measureText(text)
+        if (width > maxWidth) paint.textSize = size * maxWidth / width
+        canvas.drawText(text, rightEdge, baseline, paint)
+        paint.textSize = size
     }
 }

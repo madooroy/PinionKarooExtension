@@ -220,7 +220,8 @@ Open questions to settle on the real hardware:
   connected; in the session field 1 "Pinion Shifts" (uint16) and field 2 "Pinion Avg Gear" (float32, 0.1 steps),
   both from the service's `rideStats` (`RideGearStats` + `ShiftCounter`, covered by their tests), written when
   they change. The same `rideStats` feeds the split field "Shifts + Avg Gear" (`shifts_avg_gear`,
-  `RideGearDataType`, preview 143 / 6.4). `trackRide()` in the service: new stats when the ride leaves Idle,
+  `RideGearDataType`, preview 143 / 6.4; first preview on the Karoo 2, 2026-10-24: "SHIFTS" and "AVG GEAR" ran into
+  each other, so a label too wide for its half now wraps at a space onto two lines, as native headers do). `trackRide()` in the service: new stats when the ride leaves Idle,
   shifts counted while running or paused, the gear sampled each second while Recording (with the gearbox
   connected) for the average; the last ride's values stay shown until the next ride. Lost if the extension
   restarts mid-ride (counts start again). Native
