@@ -207,7 +207,9 @@ Open questions to settle on the real hardware:
   rear 3 s") fitted without cutting and stayed up about 30 s.
 - Repository renamed 2026-10-23 to `madooroy/PinionKarooExtension` (GitHub redirects the old name); 0.1.3's
   manifest links use the new name. The APK keeps the file name `pinion-karoo-extension-<version>.apk`.
-- Version 0.1.4 in progress (split fields, Shifts + Avg Gear, gear in the ride file): versionCode 5, all three places bumped. Still to check on the Karoo:
+- Version 0.1.4 released 2026-10-25 (split fields, Shifts + Avg Gear, gear in the ride file; versionCode 5; release APK
+  checked on the Karoo 2 first, idle sensor shown as 0; both release assets download, manifest says 0.1.4). Next
+  release: versionCode 6. Checks made for 0.1.4:
   live values in all five pairs (all seen live 2026-10-25, see the rollers session; Batt + Gear: preview 88 / 7 and the no-gearbox dashes checked on the Karoo 2
   2026-10-23 on a 2x5 data page, label "BATT %" fits beside "GEAR"); 3s Spd + Gear against the native 3s Speed beside it (speed is taken as m/s and
   converted with the profile's distance unit); zone colours against native power and HR fields in zone colour mode.
@@ -220,7 +222,7 @@ Open questions to settle on the real hardware:
   Profile-editor previews of all four checked on the Karoo 2 2026-10-23 (a 2x2 map page of the four split fields):
   speed sample 9.33 m/s shown as 20.9, so the imperial unit is picked up; 187 W and 132 bpm both fell in the
   rider's zone 2 and filled #40D078 with black text, against #60EEB2 for the Karoo's own zone 2 sample.
-- Version 0.1.3 released 2026-10-23 (tag v0.1.3 at 7db8124; update manifest, low-power scan, disconnect wording), assets the APK and `manifest.json` (forgetting the manifest gives a 404 at `releases/latest/download/manifest.json`; check it after each release): versionCode 4. Next release: versionCode 5. The version is in three places, `versionName`/
+- Version 0.1.3 released 2026-10-23 (tag v0.1.3 at 7db8124; update manifest, low-power scan, disconnect wording), assets the APK and `manifest.json` (forgetting the manifest gives a 404 at `releases/latest/download/manifest.json`; check it after each release): versionCode 4. The version is in three places, `versionName`/
   `versionCode` in `app/build.gradle.kts`, the `KarooExtension` constructor in `PinionExtensionService`, and
   `app/manifest.json`; `ReleaseVersionTest` fails unless they agree (and unless `latestApkUrl` names the release's
   APK). Release APKs are signed with the debug key of the author's laptop, so they must be built there for an
