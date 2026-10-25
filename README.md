@@ -23,12 +23,12 @@ They are ordinary Karoo fields, so they look and behave like the built-in ones.
   <tr>
     <td align="center"><img src="docs/ride-all-fields.png" width="240" alt="A Karoo 2 ride page with all eight Pinion fields during a ride"></td>
     <td align="center"><img src="docs/ride-compact.png" width="240" alt="A ride page with 3s Cad + Gear and Shifts + Avg Gear under zone-coloured power and heart rate"></td>
-    <td align="center"><img src="docs/intervals-gear.png" width="240" alt="intervals.icu chart of the ride with the Pinion Gear stream under power and heart rate"></td>
+    <td align="center"><img src="docs/intervals-gear.png" width="240" alt="intervals.icu chart of the ride with the Pinion Gear stream between heart rate and cadence"></td>
   </tr>
   <tr>
     <td align="center">All eight Pinion fields mid-ride (Karoo 2)</td>
     <td align="center">Split fields on a compact ride page</td>
-    <td align="center">The gear from the ride file in intervals.icu</td>
+    <td align="center">The gear from the ride file in intervals.icu, with power, heart rate and cadence</td>
   </tr>
 </table>
 
