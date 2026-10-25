@@ -76,6 +76,15 @@ Smart.Shift (Priority Gemini), bike stationary.
 - **Replacement gearbox, 2026-10-23** (`pinion-2026-10-23.log`, new BLE address): FORGET GEARBOX at 13:28:18, a 3 s
   hold of the rear button, found and connected at 13:28:32 (14 s), saved; 12 gears, battery 87.90 %, shifts notified
   as before. Pairing by the documented button hold works on this box.
+- **Rollers session, 2026-10-25** (`pinion-2026-10-25.log`, branch `gear-in-fit` build, Karoo 2 on USB, ride
+  06:02:10-06:33:36): all split fields live. 3s Spd + Gear matched native 3s Speed (12.6, 9.0, imperial);
+  Batt + Gear matched Pinion Battery (87); every GEAR half matched Pinion Gear. Zone fills matched the native
+  fields beside them in power zones 1-2 and HR zones 1-2 (#00B988, #60EEB2); native fields also showed power
+  zones 3-5 and HR zones 3-4 as #FFF500 / #FB8C65 / #FE581F-like, consistent with the table. Shifts + Avg Gear:
+  42 shifts, the same as the 42 gear notifications after the ride started; average 6.43 (shown 6.4). Ride file:
+  "Ride started", startFit/stopFit and "Ride file: done" logged, no errors; FIT contents not yet checked. While
+  auto-paused the 3s power and cadence halves showed a dash where native 3s Power showed 0: the stream is `Idle`
+  then (sensor connected but silent), now shown as 0 except for heart rate. No link drop in the session.
 - Not yet checked on real hardware: an outdoor ride.
 
 Pairing mode, per Pinion's app FAQ
@@ -193,7 +202,7 @@ Open questions to settle on the real hardware:
 - Repository renamed 2026-10-23 to `madooroy/PinionKarooExtension` (GitHub redirects the old name); 0.1.3's
   manifest links use the new name. The APK keeps the file name `pinion-karoo-extension-<version>.apk`.
 - Version 0.1.4 in progress (split fields): versionCode 5, all three places bumped. Still to check on the Karoo:
-  live values in all five pairs (Batt + Gear: preview 88 / 7 and the no-gearbox dashes checked on the Karoo 2
+  live values in all five pairs (all seen live 2026-10-25, see the rollers session; Batt + Gear: preview 88 / 7 and the no-gearbox dashes checked on the Karoo 2
   2026-10-23 on a 2x5 data page, label "BATT %" fits beside "GEAR"); 3s Spd + Gear against the native 3s Speed beside it (speed is taken as m/s and
   converted with the profile's distance unit); zone colours against native power and HR fields in zone colour mode.
   Colour table (2026-10-24): karoo-powerbar's (timklge/karoo-powerbar, colors.xml, unchanged since Dec 2024),
