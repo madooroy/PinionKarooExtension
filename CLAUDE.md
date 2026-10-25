@@ -82,7 +82,10 @@ Smart.Shift (Priority Gemini), bike stationary.
   fields beside them in power zones 1-2 and HR zones 1-2 (#00B988, #60EEB2); native fields also showed power
   zones 3-5 and HR zones 3-4 as #FFF500 / #FB8C65 / #FE581F-like, consistent with the table. Shifts + Avg Gear:
   42 shifts, the same as the 42 gear notifications after the ride started; average 6.43 (shown 6.4). Ride file:
-  "Ride started", startFit/stopFit and "Ride file: done" logged, no errors; FIT contents not yet checked. While
+  "Ride started", startFit/stopFit and "Ride file: done" logged, no errors. The FIT (from the Hammerhead
+  dashboard; adb finds no .fit under /sdcard) holds "Pinion Gear" in all 1811 records (42 changes, mean 6.436) and
+  "Pinion Shifts" 42 / "Pinion Avg Gear" 6.4 in the session, as developer data index 2 (Karoo's own fields, such as
+  front_gear/rear_gear, are index 1). intervals.icu did not show the stream at first. While
   auto-paused the 3s power and cadence halves showed a dash where native 3s Power showed 0: the stream is `Idle`
   then (sensor connected but silent), now shown as 0 except for heart rate. No link drop in the session.
 - Not yet checked on real hardware: an outdoor ride.
