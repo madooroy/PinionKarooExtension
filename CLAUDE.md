@@ -233,6 +233,11 @@ Open questions to settle on the real hardware:
   points Karoo at `releases/latest/download/manifest.json` (meta-data `io.hammerhead.karooext.MANIFEST_URL`), so the
   release must be marked Latest. Releasing from this cloud session is blocked (GitHub API refuses releases and tag
   pushes), so the author creates it on the website.
+- **Listed on awesome-karoo** (<https://github.com/timklge/awesome-karoo>): entry "PinionKarooExtension" under
+  "Other extensions", submitted 2026-10-25 from the author's fork, branch `patch-1`
+  (<https://github.com/madooroy/awesome-karoo/blob/patch-1/README.md>; not merged upstream at the time). Its
+  description and feature list mirror the README; after a release that adds or changes a feature, update the entry
+  too (on `patch-1` while the pull request is open, afterwards in a new pull request to timklge/awesome-karoo).
 - **Gear in the ride file** (0.1.4; branch `gear-in-fit`, merged into main 2026-10-25; built and ridden 2026-10-25, FIT
   checked: see the rollers session): `startFit` in the service,
   `fitFile="true"` in extension_info.xml. Developer field 0 "Pinion Gear" (uint8) in every record while recording and
