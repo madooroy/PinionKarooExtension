@@ -85,7 +85,10 @@ Smart.Shift (Priority Gemini), bike stationary.
   "Ride started", startFit/stopFit and "Ride file: done" logged, no errors. The FIT (from the Hammerhead
   dashboard; adb finds no .fit under /sdcard) holds "Pinion Gear" in all 1811 records (42 changes, mean 6.436) and
   "Pinion Shifts" 42 / "Pinion Avg Gear" 6.4 in the session, as developer data index 2 (Karoo's own fields, such as
-  front_gear/rear_gear, are index 1). intervals.icu did not show the stream at first. While
+  front_gear/rear_gear, are index 1). intervals.icu did not show the stream at first: the
+  ride had come through Strava, which drops developer fields; the FIT uploaded by hand showed "Pinion Gear" (custom
+  activity stream, record field `Pinion Gear`, units gear, format .0f). Hammerhead's own intervals.icu connection
+  should deliver the Karoo FIT (not checked for the Karoo 2). While
   auto-paused the 3s power and cadence halves showed a dash where native 3s Power showed 0: the stream is `Idle`
   then (sensor connected but silent), now shown as 0 except for heart rate. No link drop in the session.
 - Not yet checked on real hardware: an outdoor ride.
