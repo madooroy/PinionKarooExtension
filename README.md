@@ -190,7 +190,9 @@ Things to know:
   record field `Pinion Gear`.
 - **Shifts + Avg Gear** shows the ride's shift count and its average gear while you ride. Counting starts with
   each new ride; shifts made while the ride is paused count, and the average only takes the seconds the ride is
-  recording. After the ride the field keeps the totals until the next one starts.
+  recording. After the ride the field keeps the totals until the next one starts. The count is the gear changes
+  the gearbox reports, not button presses: a quick run of presses that it makes in one jump (5 to 8, see above)
+  counts as one shift, so the number can be lower than the clicks you made.
 - The *Pinion Smart.Shift* app on the Karoo shows the connection status, gear and battery, which helps
   when something does not connect.
 
