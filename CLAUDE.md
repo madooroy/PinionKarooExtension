@@ -89,7 +89,7 @@ Smart.Shift (Priority Gemini), bike stationary.
   ride had come through Strava, which drops developer fields; the FIT uploaded by hand showed "Pinion Gear" (custom
   activity stream, record field `Pinion Gear`, units gear, format .0f). Hammerhead's own intervals.icu connection
   delivers the Karoo FIT with the gear (checked on the Karoo 2 2026-10-26: the outdoor rides arrived on their own
-  with the Pinion Gear stream). While
+  with the Pinion Gear stream, and each ride still reached Strava once, from Hammerhead). While
   auto-paused the 3s power and cadence halves showed a dash where native 3s Power showed 0: the stream is `Idle`
   then (sensor connected but silent), now shown as 0 except for heart rate. No link drop in the session.
 - **First Karoo 3 report** (issue #2, JohnMc-76, 2026-10-24): "works perfectly" on a Priority Gemini with a Karoo 3
