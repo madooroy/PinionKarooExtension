@@ -99,7 +99,12 @@ Smart.Shift (Priority Gemini), bike stationary.
   predates the poll modes, low-power scan and split fields), runs at Android 14 rather than the Karoo 2's 8.1, reaches
   into PinionBleClient's private `instance`/`scope` by reflection, and would add a one-star JitPack dependency that
   runs on the author's laptop with every release build.
-- Not yet checked on real hardware: an outdoor ride.
+- **First outdoor rides, 2026-10-26** (`pinion-2026-10-26.log`, 0.1.4 release build, Karoo 2, alongside the author's
+  karoo-live extension under test): connected 14:47:41, no drop and no warning until 15:29:03, when the Karoo turned
+  Bluetooth off and restarted the process. Three rides recorded: 14:49-14:53 10 shifts / avg 5.2, 14:56-15:07 43 /
+  5.9, 15:09-15:25 105 / 5.4; startFit/stopFit each time; battery steady at about 87 %. Before that, 10:07-11:19,
+  the Karoo was on with the Hyperion profile away from the bike: the client searched the whole time, low-power after
+  the first 2 minutes ("Still scanning..." every 10 minutes), as designed.
 
 Pairing mode, per Pinion's app FAQ
 (<https://service.pinion.eu/en/support/solutions/articles/36000505964-pinion-smart-shift-app>): hold the shift button
@@ -191,7 +196,7 @@ Open questions to settle on the real hardware:
   the drop. From 0.1.3 the alert reads "Pinion offline / Shift once, or hold rear 3 s" and stays 30 s instead of 10
   (the rider nearly missed the 10 s one). A sticky alert (`autoDismissMs = null`) was considered and left out:
   karoo-ext has no effect to take an alert down when the gearbox comes back, and it would cover the top of the page.
-- Whether anything differs outdoors (it held 122 minutes stationary and an hour on rollers).
+- Whether anything differs outdoors: **first answer, no** (2026-10-26, 41 minutes outdoors, three rides, no drop).
 - Whether the gearbox ever demands an encrypted link (would show as GATT status 5, 8 or 15 in the log). Not seen in
   any session up to 2026-10-23 (every status 8 so far was the gearbox's own sleep or a deliberate hold).
 - 2.4 GHz interference caused dropouts for the Garmin author (an ANT+ heart rate strap). Not seen on the Karoo with
