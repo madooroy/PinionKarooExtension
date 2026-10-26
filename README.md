@@ -186,7 +186,7 @@ Things to know:
   field, "Pinion Gear", and the number of shifts and the average gear as "Pinion Shifts" and "Pinion Avg Gear". Sites that read extra FIT fields, such as
   intervals.icu, can chart them afterwards. Seconds without a connection are left empty. Strava drops these
   fields, so a ride that reaches intervals.icu through Strava has no gear: connect intervals.icu to your Hammerhead
-  account (dashboard.hammerhead.io) so it gets the Karoo's own file, or upload the FIT from the dashboard. In
+  account (dashboard.hammerhead.io; works from a Karoo 2) so it gets the Karoo's own file, or upload the FIT from the dashboard. In
   intervals.icu add the gear once as a custom activity stream (Charts, Custom Streams, Add Stream) with the
   record field `Pinion Gear`.
 - **Shifts + Avg Gear** shows the ride's shift count and its average gear while you ride. Counting starts with
