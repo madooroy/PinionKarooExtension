@@ -232,7 +232,7 @@ Open questions to settle on the real hardware:
   power 1-7 #00B988 #60EEB2 #FFF500 #FB8C65 #FE581F #D60404 #B700A2, HR 1-5 the power zones 1, 2, 3, 4, 6. It
   holds both colours the Karoo 2 profile editor painted its own sample fields with (power #60EEB2, HR #00B988);
   Barberfish's "Karoo" table, used before, held neither. With it the previews (187 W, 132 bpm, rider's zone 2) fill
-  #60EEB2 like the native zone 2 sample (Karoo 2, 2026-10-24, one test page with all eight Pinion fields). Zones 3-7 are taken on trust; check if a ride reaches them. Zone fills cover the
+  #60EEB2 like the native zone 2 sample (Karoo 2, 2026-10-24, one test page with all eight Pinion fields). Zones 3-7 were taken on trust until the outdoor ride of 2026-11-03, which reached power zones 6-7 (550 W for 22 s) and high HR: the author saw the high zone fills on the Karoo 2 (no screenshot). Zone fills cover the
   partner half only, rounded on the outer corners, and replace the divider.
   Profile-editor previews of all four checked on the Karoo 2 2026-10-23 (a 2x2 map page of the four split fields):
   speed sample 9.33 m/s shown as 20.9, so the imperial unit is picked up; 187 W and 132 bpm both fell in the
