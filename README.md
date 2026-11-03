@@ -188,7 +188,9 @@ Things to know:
   fields, so a ride that reaches intervals.icu through Strava has no gear: connect intervals.icu to your Hammerhead
   account (dashboard.hammerhead.io; works from a Karoo 2) so it gets the Karoo's own file, or upload the FIT from the dashboard. In
   intervals.icu add the gear once as a custom activity stream (Charts, Custom Streams, Add Stream) with the
-  record field `Pinion Gear`.
+  record field `Pinion Gear`. To list the ride totals with each activity too, add two custom activity fields
+  that read the FIT file fields `Pinion Shifts` (format `.0f`) and `Pinion Avg Gear` (format `.1f`). Leave
+  their units empty, or intervals.icu runs the unit into the number ("105shifts").
 - **Shifts + Avg Gear** shows the ride's shift count and its average gear while you ride. Counting starts with
   each new ride; shifts made while the ride is paused count, and the average only takes the seconds the ride is
   recording. After the ride the field keeps the totals until the next one starts. The count is the gear changes
