@@ -95,7 +95,7 @@ Smart.Shift (Priority Gemini), bike stationary.
 - **First Karoo 3 report** (issue #2, JohnMc-76, 2026-10-24): "works perfectly" on a Priority Gemini with a Karoo 3
   (version not stated, so 0.1.3 or earlier); shared in the Priority Owners Club group on Strava. Thanked and closed
   2026-11-03. The awesome-karoo entry now says "confirmed working on a Karoo 3 by a rider" (pull request #103 to
-  timklge/awesome-karoo, opened 2026-11-03 from the fork's branch `pinion-0.1.4`).
+  timklge/awesome-karoo, opened 2026-11-03 from the fork's branch `pinion-0.1.4`, merged 2026-11-09).
 - Pull request #1 (nikosavola, 2026-10-12, declined with thanks and closed 2026-10-25): a Robolectric suite on his karoo-ext-testing library (JitPack,
   test-only). Reviewed 2026-10-25, not merged: based on the 2026-10-07 code (asserts the old 10 s disconnect alert,
   predates the poll modes, low-power scan and split fields), runs at Android 14 rather than the Karoo 2's 8.1, reaches
@@ -254,7 +254,7 @@ Open questions to settle on the real hardware:
   on 2026-10-25. Its description and feature list mirror the README; after a release that adds or changes a
   feature, update the entry with a new pull request to timklge/awesome-karoo (from the fork, synced first; the
   fork's own `master` can lag behind, so branch from upstream's `master`). Second pull request: #103 (Karoo 3
-  wording), opened 2026-11-03.
+  wording), opened 2026-11-03, merged 2026-11-09.
 - **Gear in the ride file** (0.1.4; branch `gear-in-fit`, merged into main 2026-10-25; built and ridden 2026-10-25, FIT
   checked: see the rollers session): `startFit` in the service,
   `fitFile="true"` in extension_info.xml. Developer field 0 "Pinion Gear" (uint8) in every record while recording and
